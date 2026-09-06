@@ -58,6 +58,19 @@ header{position:sticky; top:0; z-index:70; background:#fff; border-bottom:1px so
 .logo-c img{width:100%}
 .hamburger{display:none; position:absolute; right:22px; top:50%; transform:translateY(-50%);
   background:none; border:1px solid var(--line); font-size:19px; padding:5px 12px; cursor:pointer; color:var(--ink)}
+.gnav a.on{border-bottom-color:var(--gold); color:var(--gold-d)}
+
+/* スマホのメニュー。ボタンの真下に開くドロップダウン。
+   ★全画面のパネルにしないこと（かみのてで一度作って戻した）。
+   画面を覆うと「閉じ方が分からない」と言われる。 */
+.mnav{display:none; position:absolute; right:20px; top:calc(100% - 4px); z-index:75;
+  background:#fff; border:1px solid var(--line); min-width:238px; padding:8px 0;
+  box-shadow:0 14px 34px rgba(20,30,50,.16)}
+.mnav a{display:block; padding:11px 22px; text-decoration:none; font-size:14px; letter-spacing:.06em}
+.mnav a:hover{background:var(--panel); color:var(--gold-d)}
+.mnav a.on{color:var(--gold-d); background:var(--panel)}
+.mnav .grp{border-top:1px solid var(--line); margin-top:8px; padding-top:6px}
+.mnav .grp-t{padding:4px 22px 2px; font-size:11px; color:var(--gold); letter-spacing:.14em}
 
 /* ---- ヒーロー ---- */
 .hero{position:relative; overflow:hidden; background:#cfe2f2}
@@ -213,6 +226,7 @@ footer a:hover{color:var(--gold)}
    まとめると中間の幅が意図せず1カラムになる。 */
 @media (max-width:1080px){
   .gnav{display:none}
+  .mnav.open{display:block}
   .hamburger{display:block}
   .gnav-row{justify-content:center; padding:14px 28px}
   .utility .seg{display:none}
@@ -320,7 +334,23 @@ footer a:hover{color:var(--gold)}
     <nav class="gnav"><a href="service.html">ご紹介できる人材</a><a href="support.html">支援内容</a><a href="flow.html">受入れの流れ</a></nav>
     <a class="logo-c" href="index.html"><img src="img/logo.png" alt="株式会社 A and K"></a>
     <nav class="gnav"><a href="partners.html">提携機関</a><a href="company.html">企業情報</a><a href="contact.html">お問い合わせ</a></nav>
-    <button class="hamburger" type="button" aria-label="メニュー">☰</button>
+    <button class="hamburger" type="button" id="menu-btn"
+            aria-label="メニューを開く" aria-expanded="false" aria-controls="mnav">☰</button>
+    <nav class="mnav" id="mnav">
+      <a href="service.html">ご紹介できる人材</a>
+      <a href="support.html">支援内容</a>
+      <a href="flow.html">受入れの流れ</a>
+      <a href="partners.html">提携機関</a>
+      <a href="company.html">企業情報</a>
+      <a href="news.html">過去のお知らせ</a>
+      <a href="contact.html">お問い合わせ</a>
+      <div class="grp">
+        <div class="grp-t">目的からお探しの方</div>
+        <a href="service.html">はじめて受入れをお考えの方</a>
+        <a href="support.html">特定技能をお考えの方</a>
+        <a href="partners.html">監理団体・組合の方</a>
+      </div>
+    </nav>
   </div>
 </header>
 
@@ -400,5 +430,32 @@ footer a:hover{color:var(--gold)}
 </footer>
 
 <div class="note">デザイン案A（見本）／数字・お写真・お知らせの一部は仮のものです。この帯は公開時には出ません。</div>
+<script>
+// スマホのメニュー。押しても何も起きない状態だったので動きを付けた。
+// 外側を押す・Escを押す・項目を選ぶ、のどれでも閉じる。
+(function () {
+  var btn = document.getElementById('menu-btn');
+  var nav = document.getElementById('mnav');
+  if (!btn || !nav) return;
+  function setOpen(open) {
+    nav.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
+  }
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    setOpen(!nav.classList.contains('open'));
+  });
+  nav.addEventListener('click', function (e) {
+    if (e.target.tagName === 'A') setOpen(false);
+  });
+  document.addEventListener('click', function (e) {
+    if (!nav.contains(e.target) && e.target !== btn) setOpen(false);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') setOpen(false);
+  });
+})();
+</script>
 </body>
 </html>
