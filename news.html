@@ -40,8 +40,11 @@ a{color:inherit}
 /* ---- ヘッダー（2段・ロゴ中央） ---- */
 .utility{border-bottom:1px solid var(--line-s)}
 .utility .wrap{display:flex; align-items:center; gap:26px; height:52px}
+/* 上段はマークだけ。中央に文字入りのロゴを置いているので、ここに社名を
+   重ねると同じものが縦に2つ並ぶ。控えめな「トップへの戻り口」に徹する。 */
 .utility .co{flex:none; display:block; line-height:0}
-.utility .co img{height:26px; width:auto}
+.utility .co img{height:28px; width:auto; opacity:.9; transition:opacity .15s}
+.utility .co:hover img{opacity:1}
 .utility .en{color:var(--gold); font-size:13px; font-weight:700; letter-spacing:.1em; text-decoration:none}
 /* 英語版は今回の範囲外。押せる見た目で何も起きないのを避け、薄く出すだけにする */
 .utility .en.off{color:var(--line); cursor:default}
@@ -320,7 +323,7 @@ footer a:hover{color:var(--gold)}
 
 <div class="utility">
   <div class="wrap">
-    <a class="co" href="index.html"><img src="img/logo.png" alt="株式会社 A and K"></a>
+    <a class="co" href="index.html" aria-label="株式会社 A and K トップへ"><img src="img/logo-mark.jpg" alt="株式会社 A and K"></a>
     <span class="en off" title="英語版は今回の範囲外です">EN</span>
     <nav class="seg">
       <a href="service.html">はじめて受入れをお考えの方</a>
