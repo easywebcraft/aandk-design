@@ -60,28 +60,27 @@ header{position:sticky; top:0; z-index:70; background:#fff; border-bottom:1px so
   background:none; border:1px solid var(--line); font-size:19px; padding:5px 12px; cursor:pointer; color:var(--ink)}
 
 /* ---- ヒーロー ---- */
-.hero{position:relative; overflow:hidden; background:var(--navy)}
+.hero{position:relative; overflow:hidden; background:#cfe2f2}
 .hero .bg{position:relative; height:clamp(340px,50vh,500px); height:clamp(340px,50svh,500px)}
-.hero .bg img{width:100%; height:100%; object-fit:cover; object-position:60% 45%}
-/* 文字は右下。**そこだけ**暗く落とす。
-   ★以前は全面に斜めのかぶせ＋下端の帯を二重にかけていて、1画面の68%が
-   暗い画素になっていた（実測）。写真の上に一様な幕を張るのをやめ、
-   文字の後ろだけを楕円で落とす。上端の薄い影はヘッダーとの境目のため。 */
+.hero .bg img{width:100%; height:100%; object-fit:cover; object-position:50% 62%}
+/* ★明るい空に白文字は成立しない（背景を暗くしないと読めず、それは
+   「明るくしたい」という目的と逆行する）。**文字を濃紺にして、かぶせを外す。**
+   下端のごく薄い白だけ残して、お知らせの帯へのつながりを作る。 */
 .hero .bg::after{content:""; position:absolute; inset:0;
   background:
-    /* 楕円の中心は**見出しの高さ**に置く。下に寄せすぎると、いちばん大きい
-       文字の背後が薄いままになる（A and K が 3.71:1 まで落ちた）。 */
-    radial-gradient(112% 96% at 84% 62%,rgba(14,20,32,.80) 0%,
-                    rgba(14,20,32,.56) 42%,transparent 74%),
-    linear-gradient(to top,rgba(16,22,34,.30) 0%,transparent 34%),
-    linear-gradient(180deg,rgba(16,22,34,.20) 0%,transparent 26%)}
+    /* ★文字の背後だけ白く起こす（局所の白）。空は青いぶん濃紺の文字でも
+       3.15:1 しか出ない。全面に白をかぶせると写真が牛乳をかけたように
+       色が抜けるので、文字の当たる楕円だけ明るくする。 */
+    radial-gradient(96% 82% at 82% 56%,rgba(255,255,255,.86) 0%,
+                    rgba(255,255,255,.62) 40%,transparent 72%),
+    linear-gradient(to top,rgba(255,255,255,.5) 0%,rgba(255,255,255,.1) 26%,transparent 46%)}
 .hero-copy{position:absolute; right:0; left:0; bottom:clamp(96px,15vh,140px); z-index:2}
 .hero-copy .wrap{text-align:right}
-.hero-copy .en{font-family:var(--serif); font-weight:200; color:#fff; letter-spacing:.22em;
+.hero-copy .en{font-family:var(--serif); font-weight:300; color:var(--navy); letter-spacing:.22em;
   font-size:clamp(30px,5.4vw,60px); line-height:1.25; margin:0;
-  text-shadow:0 2px 18px rgba(10,14,22,.5)}
-.hero-copy .jp{font-family:var(--serif); font-weight:300; color:#fff; letter-spacing:.2em;
-  font-size:clamp(13px,1.7vw,19px); margin:16px 0 0; text-shadow:0 2px 14px rgba(10,14,22,.55)}
+  text-shadow:0 1px 12px rgba(255,255,255,.85)}
+.hero-copy .jp{font-family:var(--serif); font-weight:400; color:var(--navy); letter-spacing:.2em;
+  font-size:clamp(13px,1.7vw,19px); margin:16px 0 0; text-shadow:0 1px 10px rgba(255,255,255,.9)}
 
 /* お知らせの帯。ヒーローの下端に重ねる */
 /* ★濃紺のベタだったのをクリーム地に。ヒーローと縦に連なって大きな暗い塊に
