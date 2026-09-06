@@ -42,6 +42,8 @@ a{color:inherit}
 .utility .wrap{display:flex; align-items:center; gap:26px; height:52px}
 .utility .co{font-size:13.5px; font-weight:700; letter-spacing:.08em; white-space:nowrap}
 .utility .en{color:var(--gold); font-size:13px; font-weight:700; letter-spacing:.1em; text-decoration:none}
+/* 英語版は今回の範囲外。押せる見た目で何も起きないのを避け、薄く出すだけにする */
+.utility .en.off{color:var(--line); cursor:default}
 .utility .seg{margin-left:auto; display:flex; font-size:12.5px}
 .utility .seg a{text-decoration:none; color:var(--muted); padding:0 22px; letter-spacing:.06em;
   border-left:1px solid var(--line-s); white-space:nowrap}
@@ -295,7 +297,7 @@ footer a:hover{color:var(--gold)}
 <div class="utility">
   <div class="wrap">
     <span class="co">株式会社 A and K</span>
-    <a class="en" href="#">EN</a>
+    <span class="en off" title="英語版は今回の範囲外です">EN</span>
     <nav class="seg">
       <a href="service.html">はじめて受入れをお考えの方</a>
       <a href="support.html">特定技能をお考えの方</a>
@@ -307,7 +309,7 @@ footer a:hover{color:var(--gold)}
 <header>
   <div class="gnav-row">
     <nav class="gnav"><a href="service.html" class="on">ご紹介できる人材</a><a href="support.html">支援内容</a><a href="flow.html">受入れの流れ</a></nav>
-    <a class="logo-c" href="#"><img src="img/logo.png" alt="株式会社 A and K"></a>
+    <a class="logo-c" href="index.html"><img src="img/logo.png" alt="株式会社 A and K"></a>
     <nav class="gnav"><a href="partners.html">提携機関</a><a href="company.html">企業情報</a><a href="contact.html">お問い合わせ</a></nav>
     <button class="hamburger" type="button" aria-label="メニュー">☰</button>
   </div>
@@ -348,7 +350,7 @@ footer a:hover{color:var(--gold)}
     <h2>まずは、お話をお聞かせください</h2>
     <p>ご相談・お見積りは無料です。制度の説明だけでも承ります。</p>
     <div class="row">
-      <a class="skew solid" href="#"><span>お問い合わせフォーム</span></a>
+      <a class="skew solid" href="contact.html"><span>お問い合わせにすすむ</span></a>
       <div class="tel">
         <div class="n">0574-66-3511</div>
         <div class="h">平日 9:00〜18:00（土日休）／ info@aandkcorp.com</div>
@@ -382,7 +384,7 @@ footer a:hover{color:var(--gold)}
           <li><a href="company.html">会社案内</a></li>
           <li><a href="news.html">お知らせ</a></li>
           <li><a href="faq.html">よくあるご質問</a></li>
-          <li><a href="#">プライバシーポリシー</a></li>
+          <li><a href="privacy.html">プライバシーポリシー</a></li>
           <li><a href="contact.html">お問い合わせ</a></li>
         </ul>
       </div>
