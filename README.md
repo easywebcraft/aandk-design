@@ -1,11 +1,11 @@
 # A and K さま トップページ デザイン案
 
 株式会社 A and K さま（www.aandkcorp.com）のリニューアル用トップページ案。
-構成は [aandk-proposal](https://github.com/k-matsumoto527/aandk-proposal) の02節・03節に合わせてある。
+構成は [aandk-proposal](https://github.com/easywebcraft/aandk-proposal) の02節・03節に合わせてある。
 
 | 案 | 方向 | URL |
 | --- | --- | --- |
-| A | 明朝・広い字送り・金茶（エアロファシリティー社を参考） | https://k-matsumoto527.github.io/aandk-design/ |
+| A | 明朝・広い字送り・金茶（エアロファシリティー社を参考） | https://easywebcraft.github.io/aandk-design/ |
 
 **各ページは独立している**（提案書02節の構成に合わせた10ページ）:
 `index` / `service` / `support` / `flow` / `partners` / `company` / `faq` /
