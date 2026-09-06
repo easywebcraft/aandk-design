@@ -5,7 +5,20 @@
 
 | 案 | 方向 | URL |
 | --- | --- | --- |
-| A | 明朝・広い字送り・金茶（エアロファシリティー社を参考） | https://easywebcraft.github.io/aandk-design/ |
+| A | 明朝・広い字送り・金茶（エアロファシリティー社を参考） | https://easywebcraft.github.io/aandk-design/a/ |
+| B | ゴシック・青・情報量（Sky株式会社を参考） | https://easywebcraft.github.io/aandk-design/b/ |
+
+**ページ構成は案で変えない。**（変えると案の比較ができなくなる）
+生成先は `a/` `b/` の下。`index.html` は案の入口。
+
+### 案Bの参考値（https://www.skygroup.jp/ のCSSを読んで確認）
+
+| | 参考サイト | 案Bでの実装 |
+| --- | --- | --- |
+| 書体 | YakuHanJP / **Open Sans** / Noto Sans Japanese / メイリオ | 欧文に Open Sans、和文は端末のゴシック |
+| 主色 | **`#14a0dc`**（CSSで16回・最頻） | 同じ。濃い側は `#008bd5` `#00689f` |
+| ヘッダー | 上段にロゴと問い合わせボタン、下段に横並びメニュー | 同じ型（ロゴは中央に置かない） |
+| ボタン | 角丸のピル（問い合わせ） | 同じ |
 
 **各ページは独立している**（提案書02節の構成に合わせた10ページ）:
 `index` / `service` / `support` / `flow` / `partners` / `company` / `faq` /

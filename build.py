@@ -25,6 +25,12 @@ import re
 ROOT = pathlib.Path(__file__).resolve().parent
 SRC = ROOT / "src"
 
+# 案 → (原本, 一言)。**ページ構成は案で変えない**（比べられなくなるため）。
+PLANS = {
+    "a": ("plan-a.html", "明朝と余白で、落ち着いた品位を"),
+    "b": ("plan-b.html", "青とゴシックで、明快に"),
+}
+
 # 出力ファイル → (原本の節id, メニュー表示名, ページ見出し, 英字ラベル, 説明)
 PAGES = {
     "service.html":  ("visas",    "ご紹介できる人材", "ご紹介できる人材", "SERVICE",
@@ -110,9 +116,9 @@ EXTRA_CSS = """
 """
 
 
-def parts():
+def parts(src_name):
     """原本を、使い回す部品に切り分ける。"""
-    s = (SRC / "plan-a.html").read_text(encoding="utf-8")
+    s = (SRC / src_name).read_text(encoding="utf-8")
     head = s[: s.index("</head>")]
     head = head.replace("</style>", EXTRA_CSS + "</style>")
     header = s[s.index('<div class="utility">'): s.index('<div class="hero">')]
@@ -138,17 +144,17 @@ def nav_html(current):
 
 
 def fix_links(frag, current=None):
-    """原本のアンカー（#visas など）をページへの参照に張り替える。"""
+    """原本のアンカー（#visas など）をページへの参照に張り替える。
+    画像は a/ b/ の1階層下から参照するので ../ を前置する。"""
     for sec, out in ANCHOR.items():
         frag = frag.replace(f'href="#{sec}"', f'href="{out}"')
-    frag = frag.replace('href="news.html"', 'href="news.html"')
+    frag = frag.replace('src="img/', 'src="../img/')
     return frag
 
 
 def shell(head, header, footer_html, body, current, title):
-    h = head.replace(
-        "<title>株式会社 A and K｜外国人材の受入れ支援｜デザイン案A</title>",
-        f"<title>{html.escape(title)}｜株式会社 A and K</title>")
+    h = re.sub(r"<title>.*?</title>",
+               f"<title>{html.escape(title)}｜株式会社 A and K</title>", head, count=1, flags=re.S)
     l, r = nav_html(current)
     hdr = re.sub(r'<nav class="gnav">.*?</nav>', "\x00", header, count=2, flags=re.S)
     hdr = hdr.replace("\x00", l, 1).replace("\x00", r, 1)
@@ -156,46 +162,74 @@ def shell(head, header, footer_html, body, current, title):
 
 
 def main():
-    head, header, hero, cta, footer, note, secs = parts()
-    tail = fix_links(cta) + fix_links(footer) + note
-    made = []
+    for key, (src_name, tagline) in PLANS.items():
+        out_dir = ROOT / key
+        out_dir.mkdir(exist_ok=True)
+        build_plan(out_dir, src_name)
+        print(f"  {key}/ ← {src_name}  （{tagline}）")
+    write_chooser()
+    print("  index.html（案の入口）")
 
-    # ---- トップ ----
+
+def build_plan(out_dir, src_name):
+    """1案ぶんの全ページを作る。**ページ構成は案で変えない。**"""
+    head, header, hero, cta, footer, note, secs = parts(src_name)
+    tail = fix_links(cta) + fix_links(footer) + note
+
     body = fix_links(hero)
     for out, (sec, _menu, _t, _en, _d) in PAGES.items():
         frag = fix_links(secs[sec])
         frag = frag.replace("</div>\n</section>",
-                            f'<div class="more"><a class="skew" href="{out}"><span>詳しく見る</span></a></div>\n</div>\n</section>')
+                            f'<div class="more"><a class="btn-more" href="{out}"><span>詳しく見る</span></a></div>\n</div>\n</section>')
         body += frag
-    (ROOT / "index.html").write_text(
+    (out_dir / "index.html").write_text(
         shell(head, header, tail, body, "index.html", "外国人材の受入れ支援"), encoding="utf-8")
-    made.append("index.html")
 
-    # ---- 下層 ----
     for out, (sec, _menu, ttl, en, desc) in PAGES.items():
         ph = (f'<div class="crumb"><div class="wrap"><a href="index.html">ホーム</a> ／ {html.escape(ttl)}</div></div>\n'
               f'<div class="page-head"><div class="wrap"><span class="en">{html.escape(en)}</span>'
               f'<h1>{html.escape(ttl)}</h1><p>{html.escape(desc)}</p></div></div>\n')
         extra = outline_table() if out == "company.html" else ""
-        (ROOT / out).write_text(
+        (out_dir / out).write_text(
             shell(head, header, tail, '<div class="sub">' + ph + fix_links(secs[sec]) + extra + "</div>",
                   out, ttl), encoding="utf-8")
-        made.append(out)
 
-    # ---- お知らせ ----
-    (ROOT / "news.html").write_text(
+    (out_dir / "news.html").write_text(
         shell(head, header, tail, news_body(), "news.html", "過去のお知らせ"), encoding="utf-8")
-    made.append("news.html")
-
-    # ---- お問い合わせ・プライバシーポリシー ----
-    (ROOT / "contact.html").write_text(
+    (out_dir / "contact.html").write_text(
         shell(head, header, tail, contact_body(), "contact.html", "お問い合わせ"), encoding="utf-8")
-    (ROOT / "privacy.html").write_text(
+    (out_dir / "privacy.html").write_text(
         shell(head, header, tail, privacy_body(), "privacy.html", "プライバシーポリシー"), encoding="utf-8")
-    made += ["contact.html", "privacy.html"]
 
-    for f in made:
-        print(f"  {f:16s} {(ROOT / f).stat().st_size:>7,} bytes")
+
+def write_chooser():
+    """案の入口。提案書からはここではなく各案の index を直接指す想定だが、
+    URLを短く言えるように置いておく。"""
+    cards = "".join(
+        f'<a class="c" href="{k}/"><b>案{k.upper()}</b><span>{t}</span></a>'
+        for k, (_s, t) in PLANS.items())
+    (ROOT / "index.html").write_text(f"""<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>デザイン案｜株式会社 A and K</title>
+<style>
+body{{margin:0;background:#f6f8fa;color:#1f2733;
+  font-family:-apple-system,BlinkMacSystemFont,"Yu Gothic",Meiryo,sans-serif;
+  display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}}
+.box{{max-width:640px;width:100%}}
+h1{{font-size:19px;font-weight:800;margin:0 0 6px}}
+p{{color:#6b7683;font-size:14px;margin:0 0 24px}}
+.c{{display:flex;align-items:baseline;gap:16px;background:#fff;border:1px solid #dde4ea;
+  padding:22px 24px;margin-bottom:12px;text-decoration:none;color:inherit}}
+.c:hover{{border-color:#14a0dc}}
+.c b{{font-size:19px;flex:none}}
+.c span{{color:#6b7683;font-size:14px}}
+</style></head><body><div class="box">
+<h1>株式会社 A and K さま トップページ デザイン案</h1>
+<p>ページ構成はどちらの案も同じです。見た目だけが違います。</p>
+{cards}
+</div></body></html>""", encoding="utf-8")
 
 
 def outline_table():
@@ -230,7 +264,7 @@ def news_body():
         gal = ""
         if it["images"]:
             gal = '<div class="ngal">' + "".join(
-                f'<img src="img/news/{n}" alt="" loading="lazy">' for n in it["images"]) + "</div>"
+                f'<img src="../img/news/{n}" alt="" loading="lazy">' for n in it["images"]) + "</div>"
         arts.append(f'      <article class="nitem"><time>{it["date"]}</time>'
                     f'<div class="nbody">{body}{gal}</div></article>')
     return ('<div class="crumb"><div class="wrap"><a href="index.html">ホーム</a> ／ 過去のお知らせ</div></div>\n'
