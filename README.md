@@ -5,8 +5,30 @@
 
 | 案 | 方向 | URL |
 | --- | --- | --- |
-| A | 明朝・広い字送り・金茶（エアロファシリティー社を参考） | https://k-matsumoto527.github.io/aandk-design/plan-a.html |
-| ― | 過去のお知らせ（全13件） | https://k-matsumoto527.github.io/aandk-design/news.html |
+| A | 明朝・広い字送り・金茶（エアロファシリティー社を参考） | https://k-matsumoto527.github.io/aandk-design/ |
+
+**各ページは独立している**（提案書02節の構成に合わせた10ページ）:
+`index` / `service` / `support` / `flow` / `partners` / `company` / `faq` /
+`news` / `contact` / `privacy`
+
+## 生成のしくみ
+
+**原本は `src/plan-a.html`（1枚もの）。生成物を直接編集しないこと。**
+
+```bash
+cd ~/aandk-design && python3 build.py
+```
+
+`build.py` が原本を head・ヘッダー・ヒーロー・各節・CTA・フッターに切り分け、
+節ごとに独立したページを組み立てる。メニューのリンクはアンカー（`#visas`）から
+ページ（`service.html`）へ自動で張り替わり、いま見ているページには印が付く。
+下層では節見出しを隠す（ページ見出しと二重になるため）。
+
+お知らせは `src/news.json`（旧サイトから抽出した全13件）から生成する。
+会社概要の表と、お問い合わせ・プライバシーポリシーの中身は `build.py` の中。
+
+**デザインを直すときは原本と生成物を必ず一緒にコミットする**（生成物だけ
+revert しても次のビルドで戻ってしまう）。
 
 ## 案Aの考え方
 
