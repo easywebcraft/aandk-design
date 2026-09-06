@@ -34,8 +34,7 @@ a{color:inherit}
 header{position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid var(--line)}
 .head{display:flex; align-items:center; gap:24px; padding:14px 0}
 .brand{display:flex; align-items:center; gap:11px; flex:0 1 auto; min-width:0; text-decoration:none}
-.logo{width:40px; height:40px; flex:none; border:2px solid var(--navy); display:flex;
-  align-items:center; justify-content:center; font-weight:900; color:var(--navy); font-size:15px; letter-spacing:.02em}
+.logo{width:42px; height:42px; flex:none}
 /* ★社名と添え書きは block にすること。span のままだとインラインで流れて
    隣のナビに重なる（1280pxでも社名の右にメニューが乗った）。 */
 .brand .txt{display:flex; flex-direction:column; min-width:0; line-height:1.35}
@@ -58,13 +57,15 @@ header{position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px so
   font-size:20px; padding:6px 12px; cursor:pointer; color:var(--navy)}
 
 /* ---- ヒーロー ---- */
-.hero{background:linear-gradient(135deg,var(--navy-d) 0%,var(--navy) 55%,var(--navy-l) 100%);
-  color:#fff; position:relative; overflow:hidden}
-/* 罫線のグリッドを薄く敷く＝写真に頼らず「整っている」印象を作る */
-.hero::before{content:""; position:absolute; inset:0; opacity:.16;
-  background-image:linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),
-                   linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);
-  background-size:64px 64px}
+/* 旧サイトの実写真（提携先フィリピンの教室）を敷く。
+   ★かぶせは左を濃く右を薄く＝文字は左、人の顔は右に写っているので、
+   一様に暗くすると写真が死ぬ。文字のある側だけ濃くする。 */
+.hero{background:var(--navy-d); color:#fff; position:relative; overflow:hidden}
+.hero .bg{position:absolute; inset:0}
+.hero .bg img{width:100%; height:100%; object-fit:cover; object-position:70% 50%}
+.hero .bg::after{content:""; position:absolute; inset:0;
+  background:linear-gradient(100deg,rgba(10,36,64,.94) 0%,rgba(10,36,64,.88) 42%,
+                             rgba(18,58,99,.68) 70%,rgba(18,58,99,.5) 100%)}
 .hero .wrap{position:relative; padding-top:74px; padding-bottom:66px}
 .hero .eyebrow{font-size:12.5px; letter-spacing:.2em; color:#a9c6e0; margin-bottom:18px}
 .hero h1{font-size:38px; line-height:1.5; font-weight:900; margin:0 0 20px; letter-spacing:.01em}
@@ -122,9 +123,20 @@ section.alt{background:var(--panel); border-top:1px solid var(--line); border-bo
 /* ---- 提携機関 ---- */
 .partners{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px}
 .partner{background:#fff; border:1px solid var(--line); padding:22px 24px}
-.partner .ph{height:52px; background:var(--line-s); border:1px dashed var(--line);
+/* 自社グループは提携先と同列に見せない。設立した監理団体であることが
+   一貫対応の根拠になるので、独立した帯で先に出す。 */
+.group-lead{display:flex; gap:20px; align-items:flex-start; background:#fff;
+  border:1px solid var(--navy); border-left:5px solid var(--navy); padding:22px 26px; margin-bottom:18px}
+.group-lead .badge{flex:none; background:var(--navy); color:#fff; font-size:11.5px;
+  font-weight:800; padding:4px 12px; letter-spacing:.08em; margin-top:3px}
+.group-lead h3{font-size:17px; font-weight:800; color:var(--navy); margin:0 0 6px}
+.group-lead p{margin:0; font-size:14px}
+.partner .ph{height:132px; background:var(--line-s); border:1px solid var(--line);
   display:flex; align-items:center; justify-content:center; color:var(--muted);
-  font-size:11.5px; margin-bottom:14px}
+  font-size:11.5px; margin-bottom:14px; overflow:hidden}
+.partner .ph img{width:100%; height:100%; object-fit:cover}
+.partner .ph.alt-ph{border-style:dashed}
+.partner .cc{font-size:11.5px; color:var(--gold); font-weight:700; margin-bottom:6px; letter-spacing:.06em}
 .partner h3{font-size:15.5px; font-weight:800; color:var(--navy); margin:0 0 6px}
 .partner p{font-size:13.5px; color:var(--muted); margin:0}
 
@@ -209,7 +221,7 @@ footer a:hover{text-decoration:underline}
 <header>
   <div class="wrap head">
     <a class="brand" href="#">
-      <span class="logo">AK</span>
+      <img class="logo" src="img/logo-mark.jpg" alt="株式会社 A and K">
       <span class="txt">
         <span class="nm">株式会社 A and K</span>
         <span class="sub">外国人材の受入れ支援</span>
@@ -232,6 +244,7 @@ footer a:hover{text-decoration:underline}
 </header>
 
 <div class="hero">
+  <div class="bg"><img src="img/hero-trainees.jpg" alt="提携する送り出し機関で日本語教育を受ける実習生の皆さん"></div>
   <div class="wrap">
     <div class="eyebrow">FOREIGN HUMAN RESOURCES</div>
     <h1>外国人材の受入れを、<br><span class="u">はじめのご相談から就労後まで</span>。</h1>
@@ -327,25 +340,38 @@ footer a:hover{text-decoration:underline}
 <section class="alt" id="partners">
   <div class="wrap">
     <div class="sec-head">
-      <div class="en">PARTNERS</div>
-      <h2>提携機関</h2>
-      <p>現地の送り出し機関と直接提携しているため、募集から入国までの手続きを早く進められます。</p>
+      <div class="en">GROUP &amp; PARTNERS</div>
+      <h2>自社グループと提携機関</h2>
+      <p>監理団体を自社で設立しているため、募集から入国、就労後の支援までを一貫してお引き受けできます。</p>
     </div>
+
+    <div class="group-lead">
+      <div class="badge">自社グループ</div>
+      <div>
+        <h3>ブリッジング協同組合</h3>
+        <p>2021年8月、中小企業協同組合法にもとづき<b>愛知県知事の許可を受けて弊社が設立した監理団体</b>です。
+          技能実習生の受入れを、紹介から監理まで自社グループ内で完結できます。</p>
+      </div>
+    </div>
+
     <div class="partners">
       <div class="partner">
-        <div class="ph">ロゴが入ります</div>
+        <div class="ph"><img src="img/training-1.jpg" alt="提携する送り出し機関での日本語授業の様子"></div>
         <h3>プロデンシャルエンプロイメント</h3>
-        <p>フィリピン・日本へ技能実習生を送り出すリクルートメントエージェンシー。</p>
+        <div class="cc">フィリピン</div>
+        <p>日本へ人材を送り出すリクルートメントエージェンシー。現地での面接にお立ち会いいただくことも可能です。</p>
       </div>
       <div class="partner">
-        <div class="ph">ロゴが入ります</div>
-        <h3>POLIMEX</h3>
-        <p>ベトナム・現地で選考した人材を日本へ送り出す機関。</p>
+        <div class="ph"><img src="img/training-2.jpg" alt="送り出し機関の教室で学ぶ実習生の皆さん"></div>
+        <h3>POLIMEX 国際人材株式会社</h3>
+        <div class="cc">ベトナム</div>
+        <p>2021年8月にブリッジング協同組合と業務提携。ベトナムとの手続きを早く進められます。</p>
       </div>
       <div class="partner">
-        <div class="ph">ロゴが入ります</div>
-        <h3>ブリッジング協同組合</h3>
-        <p>技能実習生の受入れを支える監理団体。優秀な実習生をご紹介いただいています。</p>
+        <div class="ph alt-ph">監理団体</div>
+        <h3>トラスト江南協同組合</h3>
+        <div class="cc">愛知県江南市</div>
+        <p>2019年9月に業務提携。愛知・岐阜・三重の企業さまや介護施設さまへの受入れを支えています。</p>
       </div>
     </div>
   </div>
@@ -404,9 +430,16 @@ footer a:hover{text-decoration:underline}
       <h2>お知らせ</h2>
     </div>
     <ul class="news">
-      <li><time>2026.09.01</time><span class="cat">お知らせ</span><span>（お知らせの見出しが入ります）</span></li>
-      <li><time>2026.08.12</time><span class="cat">お知らせ</span><span>（お知らせの見出しが入ります）</span></li>
-      <li><time>2026.07.20</time><span class="cat">お知らせ</span><span>（お知らせの見出しが入ります）</span></li>
+      <li><time>2021.08.30</time><span class="cat">提携</span>
+        <span>弊社が設立したブリッジング協同組合が、ベトナムの送り出し機関 POLIMEX 国際人材株式会社と業務提携しました。</span></li>
+      <li><time>2021.08.18</time><span class="cat">お知らせ</span>
+        <span>中小企業協同組合法により、愛知県知事の許可を受けてブリッジング協同組合を設立しました。</span></li>
+      <li><time>2019.12.09</time><span class="cat">お知らせ</span>
+        <span>岐阜県可児市今渡1149-1に事務所を開設しました（名鉄日本ライン今渡駅より徒歩10分）。</span></li>
+      <li><time>2019.09.06</time><span class="cat">提携</span>
+        <span>技能実習生受入監理団体であるトラスト江南協同組合と業務提携しました。</span></li>
+      <li><time>2019.06.28</time><span class="cat">お知らせ</span>
+        <span>出入国在留管理庁長官より、登録支援機関の登録通知書が交付されました。</span></li>
     </ul>
     <p style="margin-top:18px"><a href="#" style="color:var(--navy); font-weight:700; font-size:14px">過去のお知らせを見る →</a></p>
   </div>
@@ -418,7 +451,7 @@ footer a:hover{text-decoration:underline}
     <p>ご相談・お見積りは無料です。制度の説明だけでも承ります。</p>
     <div class="row">
       <a class="btn gold" href="#">お問い合わせフォーム</a>
-      <div class="telbox"><div class="n">0574-66-3511</div><div class="h">平日 9:00〜18:00（土日休）</div></div>
+      <div class="telbox"><div class="n">0574-66-3511</div><div class="h">平日 9:00〜18:00（土日休）／ info@aandkcorp.com</div></div>
     </div>
   </div>
 </div>
@@ -429,7 +462,8 @@ footer a:hover{text-decoration:underline}
       <div>
         <h4>株式会社 A and K</h4>
         <p style="margin:0 0 8px">〒509-0207 岐阜県可児市今渡3-11<br>
-          Tel 0574-66-3511／Fax 0574-66-7311</p>
+          Tel 0574-66-3511／Fax 0574-66-7311<br>
+          E-mail <a href="mailto:info@aandkcorp.com">info@aandkcorp.com</a></p>
         <p style="margin:0">可児今渡事務所<br>〒509-0207 岐阜県可児市今渡1149-1 2F<br>Tel・Fax 0574-50-5048</p>
       </div>
       <div>
