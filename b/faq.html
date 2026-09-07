@@ -358,6 +358,88 @@ footer a:hover{color:#fff; text-decoration:underline}
 .chips-note{text-align:left}
 .qlist{max-width:none; margin-inline:0}
 </style>
+
+<!-- ============ 開いたときの動き（前半：先に隠す） ============
+     ★<head> に置くこと。ページの一番下に置くと、いったん普通に描かれてから
+     隠れるので、一瞬ちらついてから動き出す。
+     ・動かすのは透明度と位置だけ（レイアウトは動かさない）
+     ・「動きを減らす」設定と印刷のときは動かさない                        -->
+<style>
+@keyframes rise   { from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:none} }
+@keyframes riseSp { from{opacity:0; transform:translateY(9px)}  to{opacity:1; transform:none} }
+@keyframes zoomOut{ from{transform:scale(1.06)} to{transform:none} }
+
+/* ヒーローとお知らせ帯はJSを使わずCSSだけで動かす。JSがクラスを付けるのを
+   待つと、待っている間に文字が見えてしまう（環境が遅いほど長く見える）。 */
+.hero .bg img{animation:zoomOut 1.8s cubic-bezier(.2,.7,.3,1) both}
+.hero-copy .wrap > *{animation:rise .7s cubic-bezier(.2,.7,.3,1) both}
+.hero-copy .wrap > *:nth-child(1){animation-delay:.15s}
+.hero-copy .wrap > *:nth-child(2){animation-delay:.30s}
+.hero-copy .wrap > *:nth-child(3){animation-delay:.45s}
+.hero-copy .wrap > *:nth-child(4){animation-delay:.60s}
+.hero-copy .wrap > *:nth-child(5){animation-delay:.75s}
+.newsband{animation:rise .7s cubic-bezier(.2,.7,.3,1) .55s both}
+.badges{animation:rise .7s cubic-bezier(.2,.7,.3,1) .45s both}
+
+/* スクロールで出てくる分だけ、JSがあるとき（.anim）に隠しておく */
+.anim section > .wrap > *:not(.visas):not(.support):not(.flow):not(.partners):not(.chips):not(.tsteps):not(.qlist):not(.gcards):not(.stats):not(.contact-grid),
+.anim .visas > *,
+.anim .support > *,
+.anim .flow > *,
+.anim .partners > *,
+.anim .chips > *,
+.anim .tsteps > *,
+.anim .qlist > *,
+.anim .gcards > *,
+.anim .stats > *,
+.anim .contact-grid > *,
+.anim .nlist > .wrap > *,
+.anim .cta > .wrap > *{opacity:0}
+.anim .on{animation:rise .7s cubic-bezier(.2,.7,.3,1) both}
+
+@media (max-width:700px){ .anim .on{animation-name:riseSp} }
+
+@media (prefers-reduced-motion:reduce){
+  .anim section > .wrap > *:not(.visas):not(.support):not(.flow):not(.partners):not(.chips):not(.tsteps):not(.qlist):not(.gcards):not(.stats):not(.contact-grid),
+.anim .visas > *,
+.anim .support > *,
+.anim .flow > *,
+.anim .partners > *,
+.anim .chips > *,
+.anim .tsteps > *,
+.anim .qlist > *,
+.anim .gcards > *,
+.anim .stats > *,
+.anim .contact-grid > *,
+.anim .nlist > .wrap > *,
+.anim .cta > .wrap > *{opacity:1}
+  .anim .on, .hero .bg img, .hero-copy .wrap > *, .newsband, .badges{animation:none}
+}
+@media print{
+  .anim section > .wrap > *:not(.visas):not(.support):not(.flow):not(.partners):not(.chips):not(.tsteps):not(.qlist):not(.gcards):not(.stats):not(.contact-grid),
+.anim .visas > *,
+.anim .support > *,
+.anim .flow > *,
+.anim .partners > *,
+.anim .chips > *,
+.anim .tsteps > *,
+.anim .qlist > *,
+.anim .gcards > *,
+.anim .stats > *,
+.anim .contact-grid > *,
+.anim .nlist > .wrap > *,
+.anim .cta > .wrap > *{opacity:1 !important}
+  .anim .on, .hero .bg img, .hero-copy .wrap > *, .newsband, .badges{animation:none !important}
+}
+</style>
+<script>
+// 最初の描画より前に付ける（あとから付けると、見えていたものが消えてから動く）
+document.documentElement.classList.add('anim');
+// 保険: 下のJSが動かなかったときは、隠したままにしない
+setTimeout(function(){
+  if(!window.__animReady){ document.documentElement.classList.remove('anim'); }
+}, 4000);
+</script>
 </head>
 <body>
 
@@ -502,3 +584,55 @@ footer a:hover{color:#fff; text-decoration:underline}
 </script>
 </body>
 </html>
+
+<!-- ============ 開いたときの動き（後半：順に出す） ============
+     隠す指定と対象の並びは <head> 側にある。ここでは出す順番だけを決める。 -->
+<script>
+(function () {
+  // ★ここの並びは <head> の隠す指定と必ず同じにすること
+  var ANIM_SEL = 'section > .wrap > *:not(.visas):not(.support):not(.flow):not(.partners):not(.chips):not(.tsteps):not(.qlist):not(.gcards):not(.stats):not(.contact-grid),.visas > *,.support > *,.flow > *,.partners > *,.chips > *,.tsteps > *,.qlist > *,.gcards > *,.stats > *,.contact-grid > *,.nlist > .wrap > *,.cta > .wrap > *';
+  var units = [].slice.call(document.querySelectorAll(ANIM_SEL));
+
+  function sweep() {
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var shown = [];
+    for (var i = units.length - 1; i >= 0; i--) {
+      var r = units[i].getBoundingClientRect();
+      if (r.top < vh * 0.92 && r.bottom > 0) {
+        shown.push(units[i]);
+        units.splice(i, 1);                            // 一度出したら見張らない
+      }
+    }
+    if (!shown.length) { return; }
+    shown.sort(function (a, b) {
+      return a.getBoundingClientRect().top - b.getBoundingClientRect().top;
+    }).forEach(function (el, i) {
+      el.style.animationDelay = (i * 0.06) + 's';      // 並んでいるものは少しずつずらす
+      el.classList.add('on');
+    });
+    if (!units.length) {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    }
+  }
+
+  var waiting = false;
+  function onScroll() {
+    if (waiting) { return; }
+    waiting = true;
+    requestAnimationFrame(function () { waiting = false; sweep(); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  sweep();                                             // 最初から見えている分
+  window.addEventListener('load', sweep);              // 画像が入って位置が確定したあと
+
+  window.__animReady = true;                           // <head> の保険に「動いた」と伝える
+
+  // 保険: スクロールを拾えない環境でも、中身が消えたままにはしない
+  setTimeout(function () {
+    units.forEach(function (el) { el.classList.add('on'); });
+    units.length = 0;
+  }, 5000);
+})();
+</script>

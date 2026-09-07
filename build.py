@@ -167,6 +167,131 @@ EXTRA_CSS = """
 """
 
 
+# ============ 開いたときの動き ============
+# かみのて保育園のサイト（kaminote-design/plan-a.html）と同じ仕組みをそのまま
+# 持ってきている。**隠す指定（ANIM_SEL_CSS）と、JSが探す並び（ANIM_SEL_JS）は
+# 必ず同じにすること。** 食い違うと、隠れたまま出てこない要素ができる。
+#
+# 中身を先に出す箱（カードの並びなど）は、箱ごとではなく中身を1枚ずつ出す。
+# そのため箱自身は :not() で外す。ここも2つの並びで揃える。
+ANIM_BOXES = ["visas", "support", "flow", "partners", "chips", "tsteps",
+              "qlist", "gcards", "stats", "contact-grid"]
+_NOT = "".join(f":not(.{c})" for c in ANIM_BOXES)
+_CHILDREN = ",\n".join(f".anim .{c} > *" for c in ANIM_BOXES)
+
+ANIM_SEL_CSS = (f".anim section > .wrap > *{_NOT},\n"
+                f"{_CHILDREN},\n"
+                ".anim .nlist > .wrap > *,\n"
+                ".anim .cta > .wrap > *")
+
+ANIM_SEL_JS = ("section > .wrap > *" + _NOT + ","
+               + ",".join(f".{c} > *" for c in ANIM_BOXES) + ","
+               + ".nlist > .wrap > *,"
+               + ".cta > .wrap > *")
+
+ANIM_HEAD = """
+<!-- ============ 開いたときの動き（前半：先に隠す） ============
+     ★<head> に置くこと。ページの一番下に置くと、いったん普通に描かれてから
+     隠れるので、一瞬ちらついてから動き出す。
+     ・動かすのは透明度と位置だけ（レイアウトは動かさない）
+     ・「動きを減らす」設定と印刷のときは動かさない                        -->
+<style>
+@keyframes rise   { from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:none} }
+@keyframes riseSp { from{opacity:0; transform:translateY(9px)}  to{opacity:1; transform:none} }
+@keyframes zoomOut{ from{transform:scale(1.06)} to{transform:none} }
+
+/* ヒーローとお知らせ帯はJSを使わずCSSだけで動かす。JSがクラスを付けるのを
+   待つと、待っている間に文字が見えてしまう（環境が遅いほど長く見える）。 */
+.hero .bg img{animation:zoomOut 1.8s cubic-bezier(.2,.7,.3,1) both}
+.hero-copy .wrap > *{animation:rise .7s cubic-bezier(.2,.7,.3,1) both}
+.hero-copy .wrap > *:nth-child(1){animation-delay:.15s}
+.hero-copy .wrap > *:nth-child(2){animation-delay:.30s}
+.hero-copy .wrap > *:nth-child(3){animation-delay:.45s}
+.hero-copy .wrap > *:nth-child(4){animation-delay:.60s}
+.hero-copy .wrap > *:nth-child(5){animation-delay:.75s}
+.newsband{animation:rise .7s cubic-bezier(.2,.7,.3,1) .55s both}
+.badges{animation:rise .7s cubic-bezier(.2,.7,.3,1) .45s both}
+
+/* スクロールで出てくる分だけ、JSがあるとき（.anim）に隠しておく */
+__SEL__{opacity:0}
+.anim .on{animation:rise .7s cubic-bezier(.2,.7,.3,1) both}
+
+@media (max-width:700px){ .anim .on{animation-name:riseSp} }
+
+@media (prefers-reduced-motion:reduce){
+  __SEL__{opacity:1}
+  .anim .on, .hero .bg img, .hero-copy .wrap > *, .newsband, .badges{animation:none}
+}
+@media print{
+  __SEL__{opacity:1 !important}
+  .anim .on, .hero .bg img, .hero-copy .wrap > *, .newsband, .badges{animation:none !important}
+}
+</style>
+<script>
+// 最初の描画より前に付ける（あとから付けると、見えていたものが消えてから動く）
+document.documentElement.classList.add('anim');
+// 保険: 下のJSが動かなかったときは、隠したままにしない
+setTimeout(function(){
+  if(!window.__animReady){ document.documentElement.classList.remove('anim'); }
+}, 4000);
+</script>
+""".replace("__SEL__", ANIM_SEL_CSS)
+
+ANIM_JS = """
+<!-- ============ 開いたときの動き（後半：順に出す） ============
+     隠す指定と対象の並びは <head> 側にある。ここでは出す順番だけを決める。 -->
+<script>
+(function () {
+  // ★ここの並びは <head> の隠す指定と必ず同じにすること
+  var ANIM_SEL = '__SEL__';
+  var units = [].slice.call(document.querySelectorAll(ANIM_SEL));
+
+  function sweep() {
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var shown = [];
+    for (var i = units.length - 1; i >= 0; i--) {
+      var r = units[i].getBoundingClientRect();
+      if (r.top < vh * 0.92 && r.bottom > 0) {
+        shown.push(units[i]);
+        units.splice(i, 1);                            // 一度出したら見張らない
+      }
+    }
+    if (!shown.length) { return; }
+    shown.sort(function (a, b) {
+      return a.getBoundingClientRect().top - b.getBoundingClientRect().top;
+    }).forEach(function (el, i) {
+      el.style.animationDelay = (i * 0.06) + 's';      // 並んでいるものは少しずつずらす
+      el.classList.add('on');
+    });
+    if (!units.length) {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    }
+  }
+
+  var waiting = false;
+  function onScroll() {
+    if (waiting) { return; }
+    waiting = true;
+    requestAnimationFrame(function () { waiting = false; sweep(); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  sweep();                                             // 最初から見えている分
+  window.addEventListener('load', sweep);              // 画像が入って位置が確定したあと
+
+  window.__animReady = true;                           // <head> の保険に「動いた」と伝える
+
+  // 保険: スクロールを拾えない環境でも、中身が消えたままにはしない
+  setTimeout(function () {
+    units.forEach(function (el) { el.classList.add('on'); });
+    units.length = 0;
+  }, 5000);
+})();
+</script>
+""".replace("__SEL__", ANIM_SEL_JS)
+
+
 # 案Bは見出しが左揃えなので、要約も左に寄せる（案Aは中央揃え）。
 PLAN_CSS = {
     "b": """
@@ -334,7 +459,8 @@ def shell(head, header, footer_html, body, current, title):
     l, r = nav_html(current)
     hdr = re.sub(r'<nav class="gnav">.*?</nav>', "\x00", header, count=2, flags=re.S)
     hdr = hdr.replace("\x00", l, 1).replace("\x00", r, 1)
-    return h + "</head>\n<body>\n\n" + fix_links(hdr) + body + footer_html
+    return (h + ANIM_HEAD + "</head>\n<body>\n\n"
+            + fix_links(hdr) + body + footer_html + ANIM_JS)
 
 
 def main():
