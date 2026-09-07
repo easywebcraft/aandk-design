@@ -42,7 +42,7 @@ a{color:inherit}
 .utility .wrap{display:flex; align-items:center; gap:26px; height:52px}
 /* 上段はマークだけ。中央に文字入りのロゴを置いているので、ここに社名を
    重ねると同じものが縦に2つ並ぶ。控えめな「トップへの戻り口」に徹する。 */
-.utility .co{flex:none; display:block; line-height:0}
+.utility .co{flex:none; display:flex; align-items:center; line-height:0; min-height:44px}
 .utility .co img{height:28px; width:auto; opacity:.9; transition:opacity .15s}
 .utility .co:hover img{opacity:1}
 .utility .en{color:var(--gold); font-size:13px; font-weight:700; letter-spacing:.1em; text-decoration:none}
@@ -58,10 +58,12 @@ header{position:sticky; top:0; z-index:70; background:#fff; border-bottom:1px so
 .gnav{display:flex; gap:38px; font-size:14px; letter-spacing:.08em}
 .gnav a{text-decoration:none; padding:8px 0; border-bottom:1px solid transparent; white-space:nowrap}
 .gnav a:hover{border-bottom-color:var(--gold); color:var(--gold-d)}
-.logo-c{flex:none; width:186px}
+.logo-c{flex:none; width:186px; display:flex; align-items:center; min-height:44px}
 .logo-c img{width:100%}
+/* 指で押す的は44px角を下回らせない（38pxだった） */
 .hamburger{display:none; position:absolute; right:22px; top:50%; transform:translateY(-50%);
-  background:none; border:1px solid var(--line); font-size:19px; padding:5px 12px; cursor:pointer; color:var(--ink)}
+  background:none; border:1px solid var(--line); font-size:19px; padding:5px 12px; cursor:pointer;
+  color:var(--ink); min-width:44px; min-height:44px; line-height:1}
 .gnav a.on{border-bottom-color:var(--gold); color:var(--gold-d)}
 
 /* スマホのメニュー。ボタンの真下に開くドロップダウン。
@@ -253,6 +255,9 @@ footer a:hover{color:var(--gold)}
   .newsband .ttl{border-right:none; border-bottom:1px solid var(--line);
     padding-right:0; padding-bottom:12px}
   .newsband .skew{align-self:flex-start}
+  /* 1行27pxでは指で押しにくい。スマホだけ行に高さを持たせる */
+  .newsband li{margin:0; align-items:baseline}
+  .newsband li a{display:block; padding:9px 0}
   .hero-copy{bottom:36px}
   .hero-copy .wrap{text-align:left}
   .flow{grid-template-columns:1fr}

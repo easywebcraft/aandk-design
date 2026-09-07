@@ -36,15 +36,16 @@ a{color:inherit}
 /* ---- ヘッダー（上段＝ロゴと問い合わせ／下段＝メニュー） ---- */
 .utility{border-bottom:1px solid var(--line-s)}
 .utility .wrap{display:flex; align-items:center; gap:18px; height:64px}
-.utility .co{flex:none; display:block; line-height:0}
+.utility .co{flex:none; display:flex; align-items:center; line-height:0; min-height:44px}
 .utility .co img{height:34px; width:auto}
 .utility .seg{margin-left:auto; display:flex; gap:22px; font-size:12.5px}
 .utility .seg a{text-decoration:none; color:var(--muted); white-space:nowrap}
 .utility .seg a:hover{color:var(--blue-d)}
 .utility .en{color:var(--muted); font-size:12.5px; font-weight:700; text-decoration:none}
 .utility .en.off{color:var(--line); cursor:default}
-.pill{flex:none; display:inline-block; background:var(--blue); color:#fff; text-decoration:none;
-  padding:9px 22px; border-radius:999px; font-size:13.5px; font-weight:700; white-space:nowrap}
+.pill{flex:none; display:inline-flex; align-items:center; background:var(--blue); color:#fff;
+  text-decoration:none; padding:9px 22px; border-radius:999px; font-size:13.5px; font-weight:700;
+  white-space:nowrap; min-height:44px}
 .pill:hover{background:var(--blue-d)}
 
 header{position:sticky; top:0; z-index:70; background:#fff; border-bottom:1px solid var(--line);
@@ -56,9 +57,11 @@ header{position:sticky; top:0; z-index:70; background:#fff; border-bottom:1px so
 .gnav a:hover{color:var(--blue-d); border-bottom-color:var(--blue)}
 .gnav a.on{color:var(--blue-d); border-bottom-color:var(--blue)}
 .logo-c{display:none}
+/* 指で押す的は44px角を下回らせない（38pxだった） */
 .hamburger{display:none; position:absolute; right:20px; top:50%; transform:translateY(-50%);
   background:none; border:1px solid var(--line); font-size:19px; padding:5px 12px;
-  cursor:pointer; color:var(--ink); border-radius:4px}
+  cursor:pointer; color:var(--ink); border-radius:4px;
+  min-width:44px; min-height:44px; line-height:1}
 
 /* スマホのメニュー。ボタンの真下に開くドロップダウン（全画面パネルにはしない） */
 .mnav{display:none; position:absolute; right:18px; top:calc(100% - 2px); z-index:75;
@@ -222,6 +225,7 @@ footer a:hover{color:#fff; text-decoration:underline}
 /* ★ヘッダーを畳む幅は、レイアウトの折返しと別の @media に分ける */
 @media (max-width:1080px){
   .gnav{display:none}
+  .mnav.open{display:block}
   .hamburger{display:block}
   .gnav-row{justify-content:flex-start; min-height:52px}
   .utility .seg{display:none}
@@ -234,7 +238,7 @@ footer a:hover{color:#fff; text-decoration:underline}
      ボタンがはみ出していた（A.pill）。折り返して2行にする。 */
   .utility .wrap{height:auto; flex-wrap:wrap; padding-top:10px; padding-bottom:10px; gap:10px 14px}
   .utility .en{margin-left:auto}
-  .pill{padding:8px 16px; font-size:13px}
+  .pill{padding:8px 16px; font-size:13px; min-height:44px}
 }
 @media (max-width:760px){
   section{padding:46px 0}
@@ -246,6 +250,10 @@ footer a:hover{color:#fff; text-decoration:underline}
     rgba(255,255,255,.86) 52%,rgba(255,255,255,.5) 100%)}
   .newsband .box{flex-direction:column}
   .newsband .more-l{border-left:none; border-top:1px solid var(--blue-line); padding:12px 22px}
+  /* 1行25pxでは指で押しにくい。スマホだけ行に高さを持たせる */
+  .newsband li{margin:0; align-items:baseline}
+  .newsband li a{display:block; padding:9px 0}
+  .newsband .more-l a{display:block; padding:10px 0}
   .badges .wrap{gap:8px 22px}
   footer .cols{grid-template-columns:1fr; gap:22px}
   .cta .row{flex-direction:column; gap:18px}
@@ -470,14 +478,16 @@ footer a:hover{color:#fff; text-decoration:underline}
   var btn = document.getElementById('menu-btn');
   var nav = document.getElementById('mnav');
   if (!btn || !nav) return;
+  // ★style.display で開かないこと。インラインの指定はメディアクエリより強いので、
+  //   開いたまま画面を1080pxより広げるとドロワーが出たまま残る（案Aと同じclass方式にした）。
   function setOpen(open) {
-    nav.style.display = open ? 'block' : '';
+    nav.classList.toggle('open', open);
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     btn.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
   }
   btn.addEventListener('click', function (e) {
     e.stopPropagation();
-    setOpen(nav.style.display !== 'block');
+    setOpen(!nav.classList.contains('open'));
   });
   nav.addEventListener('click', function (e) { if (e.target.tagName === 'A') setOpen(false); });
   document.addEventListener('click', function (e) {
