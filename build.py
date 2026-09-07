@@ -33,7 +33,12 @@ SRC = ROOT / "src"
 PLANS = {
     "a": ("plan-a.html", "明朝と余白で、落ち着いた品位を"),
     "b": ("plan-b.html", "青とゴシックで、明快に"),
+    "c": ("plan-c.html", "濃紺と大きな英字で、堅実に"),
 }
+# 原本は、build.py が差し込むCSSが使う変数を必ず定義すること。
+#   --gold（差し色）／--gold-d（濃い差し色）／--serif（見出しの書体）
+#   --line ／--line-s（罫線）／--muted（補助の文字）／--panel（薄い地）／--ink（文字）
+# 名前は案Aから来ているが中身は案ごとに違う（案Cでは青と濃紺を入れている）。
 
 # 出力ファイル → (原本の節id, メニュー表示名, ページ見出し, 英字ラベル, 説明)
 # 説明は、原本の節に導入文があればそちらを優先する（節の導入文は下層でしか
@@ -298,6 +303,35 @@ PLAN_CSS = {
 .chips,.tsteps{justify-content:flex-start}
 .chips-note{text-align:left}
 .qlist{max-width:none; margin-inline:0}
+""",
+    # 案Cは参考サイトに合わせて、下層のページ見出しを濃紺の帯にする。
+    # 角も落とさない（参考サイトのボタン・箱が border-radius:0）。
+    "c": """
+.crumb{background:var(--panel); padding:13px 0; color:var(--muted)}
+.page-head{background:var(--navy); color:#fff; padding:54px 0 48px}
+.page-head .en{font-family:var(--serif); color:#8fc6e8; font-weight:700;
+  font-size:clamp(26px,4.6vw,46px); letter-spacing:.02em; line-height:1.05; margin-bottom:8px}
+.page-head h1{font-family:var(--sans); font-weight:700; color:#fff;
+  font-size:clamp(18px,2.4vw,23px); letter-spacing:.1em; margin:0 0 12px}
+.page-head p{color:#c5d8ec}
+.sub section{padding:58px 0 82px}
+.nitem time{font-family:var(--serif); font-weight:600; color:var(--blue)}
+.nbody p:first-child{font-family:var(--sans); font-weight:700; color:var(--navy); font-size:16.5px}
+.outline th{font-family:var(--sans); font-weight:700; color:var(--navy); background:var(--blue-s);
+  letter-spacing:.04em}
+.gcard h3{color:var(--navy)}
+.gcard .gtag{color:var(--blue)}
+.contact-box h3{font-family:var(--sans); font-weight:700; color:var(--navy); letter-spacing:.06em}
+.contact-box .big{font-family:var(--serif); color:var(--navy)}
+.chip{border-radius:0}
+.chips .num{color:var(--blue)}
+.tstep{border-top:3px solid var(--blue)}
+.tstep .num{font-family:var(--serif); color:var(--blue); font-weight:600}
+.qlist a{color:var(--navy); font-weight:500}
+@media (max-width:760px){
+  .page-head{padding:34px 0 30px}
+  .sub section{padding:34px 0 56px}
+}
 """,
 }
 
