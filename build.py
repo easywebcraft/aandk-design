@@ -93,6 +93,13 @@ EXTRA_CSS = """
 .outline th{width:190px; font-family:var(--serif); font-weight:400; color:var(--gold-d);
   letter-spacing:.1em; white-space:nowrap}
 
+/* ---- グループの事業 ---- */
+.gcards{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:18px}
+.gcard{background:#fff; border:1px solid var(--line); padding:22px 24px}
+.gcard h3{font-size:16.5px; margin:0 0 6px}
+.gcard .gtag{font-size:11.5px; color:var(--gold,#b39861); margin-bottom:8px; letter-spacing:.06em}
+.gcard p{font-size:13.5px; color:var(--muted); margin:0; line-height:1.9}
+
 /* ---- お問い合わせ ---- */
 .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:48px; margin-top:20px}
 .contact-box{border:1px solid var(--line); padding:34px 32px}
@@ -189,7 +196,7 @@ def build_plan(out_dir, src_name):
         ph = (f'<div class="crumb"><div class="wrap"><a href="index.html">ホーム</a> ／ {html.escape(ttl)}</div></div>\n'
               f'<div class="page-head"><div class="wrap"><span class="en">{html.escape(en)}</span>'
               f'<h1>{html.escape(ttl)}</h1><p>{html.escape(desc)}</p></div></div>\n')
-        extra = outline_table() if out == "company.html" else ""
+        extra = (outline_table() + group_section()) if out == "company.html" else ""
         (out_dir / out).write_text(
             shell(head, header, tail, '<div class="sub">' + ph + fix_links(secs[sec]) + extra + "</div>",
                   out, ttl), encoding="utf-8")
@@ -230,6 +237,35 @@ p{{color:#6b7683;font-size:14px;margin:0 0 24px}}
 <p>ページ構成はどちらの案も同じです。見た目だけが違います。</p>
 {cards}
 </div></body></html>""", encoding="utf-8")
+
+
+def group_section():
+    """グループの事業。旧サイトの h1 と事業内容に、児童福祉の記載があった。
+    このサイトは外国人材に絞る方針だが、**落とすのではなく紹介にとどめ、
+    詳細はそれぞれのサイトへ渡す**（原則リニューアルをベースにするため）。"""
+    cards = [
+        ("かみのて保育園", "こども家庭庁所管 企業主導型保育事業",
+         "2022年7月開園。外国にルーツのあるお子さまをお預かりしています。",
+         "https://www.kaminote-hoikuen.com/"),
+        ("かみのて今渡保育園", "可児市 小規模認可保育園",
+         "2023年10月開園。可児市の待機児童の解消と、地域の子育て支援に取り組んでいます。", None),
+        ("かみのてKIDS・かみのてSMILE", "児童発達支援・放課後等デイサービス",
+         "2025年6月にかみのてKIDSが新築移転し、受け入れ人数を増やしました。", None),
+        ("一時預かり事業", "",
+         "新社屋の2階で、一時預かりも行っています。", None),
+    ]
+    items = ""
+    for name, tag, desc, url in cards:
+        link = (f'<p style="margin-top:8px"><a href="{url}" target="_blank" rel="noopener">'
+                f'サイトを見る</a></p>' if url else "")
+        items += (f'<div class="gcard"><h3>{name}</h3>'
+                  f'{f"<div class=\"gtag\">{tag}</div>" if tag else ""}'
+                  f'<p>{desc}</p>{link}</div>')
+    return ('<section class="alt"><div class="wrap">'
+            '<div class="sec-head" style="display:block"><span class="en">GROUP</span>'
+            '<h2>グループの事業</h2>'
+            '<p>外国人材の受入れ支援のほか、保育園と児童発達支援・放課後等デイサービスを運営しています。</p></div>'
+            f'<div class="gcards">{items}</div></div></section>')
 
 
 def outline_table():
