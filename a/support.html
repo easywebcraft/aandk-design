@@ -142,8 +142,12 @@ section.alt{background:var(--panel)}
 .stat .l{font-size:12.5px; color:var(--muted); letter-spacing:.1em; margin-top:8px}
 
 /* 在留資格 */
-.visas{display:grid; grid-template-columns:repeat(auto-fit,minmax(216px,1fr)); gap:1px; background:var(--line)}
-.visa{background:#fff; padding:34px 26px}
+/* 5項目なので4列だと1マス余る。隙間の色を透かす作りだと、その余りが
+   灰色の塊になって見える。区切りは枠線で引き、余りは白のままにする。 */
+.visas{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  border-top:1px solid var(--line); border-left:1px solid var(--line)}
+.visa{background:#fff; padding:34px 26px;
+  border-right:1px solid var(--line); border-bottom:1px solid var(--line)}
 .visa .n{font-family:var(--serif); color:var(--gold); font-size:13px; letter-spacing:.2em; text-align:center}
 .visa h3{font-family:var(--serif); font-weight:400; font-size:17px; letter-spacing:.1em;
   margin:10px 0 14px; text-align:center}
@@ -275,6 +279,31 @@ footer a:hover{color:var(--gold)}
 /* トップの各節に付ける「詳しく見る」 */
 .more{text-align:center; margin-top:40px}
 
+/* ---- トップの要約（説明は下層ページに置く） ---- */
+.chips{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
+.chip{border:1px solid var(--line); background:#fff; padding:11px 20px;
+  font-size:14.5px; letter-spacing:.06em; white-space:nowrap}
+.chips .num{color:var(--gold,#b39861); font-size:12px; margin-right:8px;
+  font-variant-numeric:tabular-nums}
+.chips-note{text-align:center; color:var(--muted); font-size:13px; margin:16px 0 0;
+  letter-spacing:.04em}
+.tsteps{display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
+  list-style:none; margin:0; padding:0}
+.tstep{border:1px solid var(--line); background:#fff; padding:14px 18px; text-align:center;
+  flex:1 1 150px; max-width:230px}
+.tstep .num{display:block; color:var(--gold,#b39861); font-size:11.5px; letter-spacing:.14em;
+  margin-bottom:6px; font-variant-numeric:tabular-nums}
+.tstep b{display:block; font-weight:400; font-size:15px; letter-spacing:.05em}
+.tstep span{display:block; color:var(--muted); font-size:12px; margin-top:6px}
+.qlist{list-style:none; margin:0; padding:0; max-width:760px; margin-inline:auto}
+.qlist li{border-bottom:1px solid var(--line)}
+.qlist a{display:block; padding:18px 4px; text-decoration:none; font-size:14.5px;
+  letter-spacing:.04em}
+.qlist a:hover{color:var(--gold,#b39861)}
+/* トップのごあいさつは見出しと署名だけなので、お写真と高さが揃わない */
+.top-greet{align-items:center}
+.top-greet .ph{aspect-ratio:4/5}
+
 /* ---- 過去のお知らせ ---- */
 .nlist{padding:52px 0 86px}
 .nitem{display:grid; grid-template-columns:140px 1fr; gap:34px;
@@ -317,6 +346,9 @@ footer a:hover{color:var(--gold)}
 .plain{font-size:14px; letter-spacing:.02em}
 
 @media (max-width:760px){
+  /* 「住居の確保・生活に必要な契約の支援」は390pxで1行に収まらない */
+  .chip{padding:9px 15px; font-size:13.5px; white-space:normal}
+  .tstep{flex:1 1 128px; padding:12px 10px}
   .nitem{grid-template-columns:1fr; gap:10px; padding:24px 0}
   .nlist{padding:32px 0 56px}
   .outline th{width:auto; display:block; border-bottom:none; padding-bottom:0}
@@ -366,7 +398,7 @@ footer a:hover{color:var(--gold)}
 </header>
 
 <div class="sub"><div class="crumb"><div class="wrap"><a href="index.html">ホーム</a> ／ 登録支援機関としての支援</div></div>
-<div class="page-head"><div class="wrap"><span class="en">SUPPORT</span><h1>登録支援機関としての支援</h1><p>特定技能で義務づけられている支援です。</p></div></div>
+<div class="page-head"><div class="wrap"><span class="en">SUPPORT</span><h1>登録支援機関としての支援</h1><p>特定技能で義務づけられている支援です。以下はすべて弊社がお引き受けします。</p></div></div>
 <section class="alt" id="support">
   <div class="wrap">
     <div class="sec-head">

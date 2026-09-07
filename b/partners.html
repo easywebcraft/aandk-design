@@ -268,6 +268,31 @@ footer a:hover{color:#fff; text-decoration:underline}
 /* トップの各節に付ける「詳しく見る」 */
 .more{text-align:center; margin-top:40px}
 
+/* ---- トップの要約（説明は下層ページに置く） ---- */
+.chips{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
+.chip{border:1px solid var(--line); background:#fff; padding:11px 20px;
+  font-size:14.5px; letter-spacing:.06em; white-space:nowrap}
+.chips .num{color:var(--gold,#b39861); font-size:12px; margin-right:8px;
+  font-variant-numeric:tabular-nums}
+.chips-note{text-align:center; color:var(--muted); font-size:13px; margin:16px 0 0;
+  letter-spacing:.04em}
+.tsteps{display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
+  list-style:none; margin:0; padding:0}
+.tstep{border:1px solid var(--line); background:#fff; padding:14px 18px; text-align:center;
+  flex:1 1 150px; max-width:230px}
+.tstep .num{display:block; color:var(--gold,#b39861); font-size:11.5px; letter-spacing:.14em;
+  margin-bottom:6px; font-variant-numeric:tabular-nums}
+.tstep b{display:block; font-weight:400; font-size:15px; letter-spacing:.05em}
+.tstep span{display:block; color:var(--muted); font-size:12px; margin-top:6px}
+.qlist{list-style:none; margin:0; padding:0; max-width:760px; margin-inline:auto}
+.qlist li{border-bottom:1px solid var(--line)}
+.qlist a{display:block; padding:18px 4px; text-decoration:none; font-size:14.5px;
+  letter-spacing:.04em}
+.qlist a:hover{color:var(--gold,#b39861)}
+/* トップのごあいさつは見出しと署名だけなので、お写真と高さが揃わない */
+.top-greet{align-items:center}
+.top-greet .ph{aspect-ratio:4/5}
+
 /* ---- 過去のお知らせ ---- */
 .nlist{padding:52px 0 86px}
 .nitem{display:grid; grid-template-columns:140px 1fr; gap:34px;
@@ -310,6 +335,9 @@ footer a:hover{color:#fff; text-decoration:underline}
 .plain{font-size:14px; letter-spacing:.02em}
 
 @media (max-width:760px){
+  /* 「住居の確保・生活に必要な契約の支援」は390pxで1行に収まらない */
+  .chip{padding:9px 15px; font-size:13.5px; white-space:normal}
+  .tstep{flex:1 1 128px; padding:12px 10px}
   .nitem{grid-template-columns:1fr; gap:10px; padding:24px 0}
   .nlist{padding:32px 0 56px}
   .outline th{width:auto; display:block; border-bottom:none; padding-bottom:0}
@@ -317,6 +345,10 @@ footer a:hover{color:#fff; text-decoration:underline}
   .contact-grid{grid-template-columns:1fr; gap:26px}
   .sub section{padding:28px 0 56px}
 }
+
+.chips,.tsteps{justify-content:flex-start}
+.chips-note{text-align:left}
+.qlist{max-width:none; margin-inline:0}
 </style>
 </head>
 <body>
@@ -360,7 +392,7 @@ footer a:hover{color:#fff; text-decoration:underline}
 </header>
 
 <div class="sub"><div class="crumb"><div class="wrap"><a href="index.html">ホーム</a> ／ 自社グループと提携機関</div></div>
-<div class="page-head"><div class="wrap"><span class="en">GROUP &amp; PARTNERS</span><h1>自社グループと提携機関</h1><p>監理団体を自社で設立しているため、一貫してお引き受けできます。</p></div></div>
+<div class="page-head"><div class="wrap"><span class="en">GROUP &amp; PARTNERS</span><h1>自社グループと提携機関</h1><p>監理団体を自社で設立しているため、募集から入国、就労後の支援までを一貫してお引き受けできます。</p></div></div>
 <section class="alt" id="partners">
   <div class="wrap">
     <div class="sec-head">

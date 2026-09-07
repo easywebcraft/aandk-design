@@ -142,8 +142,12 @@ section.alt{background:var(--panel)}
 .stat .l{font-size:12.5px; color:var(--muted); letter-spacing:.1em; margin-top:8px}
 
 /* 在留資格 */
-.visas{display:grid; grid-template-columns:repeat(auto-fit,minmax(216px,1fr)); gap:1px; background:var(--line)}
-.visa{background:#fff; padding:34px 26px}
+/* 5項目なので4列だと1マス余る。隙間の色を透かす作りだと、その余りが
+   灰色の塊になって見える。区切りは枠線で引き、余りは白のままにする。 */
+.visas{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  border-top:1px solid var(--line); border-left:1px solid var(--line)}
+.visa{background:#fff; padding:34px 26px;
+  border-right:1px solid var(--line); border-bottom:1px solid var(--line)}
 .visa .n{font-family:var(--serif); color:var(--gold); font-size:13px; letter-spacing:.2em; text-align:center}
 .visa h3{font-family:var(--serif); font-weight:400; font-size:17px; letter-spacing:.1em;
   margin:10px 0 14px; text-align:center}
@@ -275,6 +279,31 @@ footer a:hover{color:var(--gold)}
 /* トップの各節に付ける「詳しく見る」 */
 .more{text-align:center; margin-top:40px}
 
+/* ---- トップの要約（説明は下層ページに置く） ---- */
+.chips{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
+.chip{border:1px solid var(--line); background:#fff; padding:11px 20px;
+  font-size:14.5px; letter-spacing:.06em; white-space:nowrap}
+.chips .num{color:var(--gold,#b39861); font-size:12px; margin-right:8px;
+  font-variant-numeric:tabular-nums}
+.chips-note{text-align:center; color:var(--muted); font-size:13px; margin:16px 0 0;
+  letter-spacing:.04em}
+.tsteps{display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
+  list-style:none; margin:0; padding:0}
+.tstep{border:1px solid var(--line); background:#fff; padding:14px 18px; text-align:center;
+  flex:1 1 150px; max-width:230px}
+.tstep .num{display:block; color:var(--gold,#b39861); font-size:11.5px; letter-spacing:.14em;
+  margin-bottom:6px; font-variant-numeric:tabular-nums}
+.tstep b{display:block; font-weight:400; font-size:15px; letter-spacing:.05em}
+.tstep span{display:block; color:var(--muted); font-size:12px; margin-top:6px}
+.qlist{list-style:none; margin:0; padding:0; max-width:760px; margin-inline:auto}
+.qlist li{border-bottom:1px solid var(--line)}
+.qlist a{display:block; padding:18px 4px; text-decoration:none; font-size:14.5px;
+  letter-spacing:.04em}
+.qlist a:hover{color:var(--gold,#b39861)}
+/* トップのごあいさつは見出しと署名だけなので、お写真と高さが揃わない */
+.top-greet{align-items:center}
+.top-greet .ph{aspect-ratio:4/5}
+
 /* ---- 過去のお知らせ ---- */
 .nlist{padding:52px 0 86px}
 .nitem{display:grid; grid-template-columns:140px 1fr; gap:34px;
@@ -317,6 +346,9 @@ footer a:hover{color:var(--gold)}
 .plain{font-size:14px; letter-spacing:.02em}
 
 @media (max-width:760px){
+  /* 「住居の確保・生活に必要な契約の支援」は390pxで1行に収まらない */
+  .chip{padding:9px 15px; font-size:13.5px; white-space:normal}
+  .tstep{flex:1 1 128px; padding:12px 10px}
   .nitem{grid-template-columns:1fr; gap:10px; padding:24px 0}
   .nlist{padding:32px 0 56px}
   .outline th{width:auto; display:block; border-bottom:none; padding-bottom:0}
@@ -378,171 +410,62 @@ footer a:hover{color:var(--gold)}
 <div class="newsband">
   <div class="wrap">
     <div class="ttl">News &amp; Topics</div>
-    <ul>
-      <li><time>2021.08.30</time><a href="news.html">令和3年8月30日に弊社設立のブリッジング協同組合はベトナム国内の送り出し機関POLIMEX国際人材株式会社と業務提携をしました。</a></li>
-      <li><time>2021.08.18</time><a href="news.html">令和3年8月2日に中小企業協同組合法により、愛知県知事の許可を受けてブリッジング協同組合を設立しました。</a></li>
-      <li><time>2021.03.28</time><a href="news.html">HANDS OF GOD保育園の卒園式を行いました。</a></li>
-    </ul>
+    <ul><li><time>2025.06.02</time><a href="news.html">弊社運営の児童発達支援・放課後デイサービス「かみのてKIDS」が新築移転しました。</a></li><li><time>2025.03.22</time><a href="news.html">弊社運営のハンズオブガッド今渡保育園の卒園式を3月22日（土）可児市アーラにて行いました。</a></li><li><time>2024.12.13</time><a href="news.html">新施設の地鎮祭を執り行いました。</a></li></ul>
     <a class="skew" href="news.html"><span>Read more</span></a>
   </div>
 </div>
 
 <section id="visas">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="en">SERVICE</span>
-      <h2>ご紹介できる人材</h2>
-      <p>就労が可能な5つの在留資格すべてに対応しています。どの制度が合うかからご相談いただけます。<strong>介護の人材</strong>にも力を入れています。</p>
-    </div>
-    <div class="visas">
-      <div class="visa"><div class="n">01</div><h3>技能実習</h3>
-        <p>自社グループの監理団体を通じ、現地で選考した実習生をご紹介します。手続きの代行と、<strong>フィリピン国内での出国手続き</strong>までお手伝いします。</p></div>
-      <div class="visa"><div class="n">02</div><h3>特定技能</h3>
-        <p>登録支援機関として、受入れ後に義務づけられた支援も含めてお引き受けします。</p></div>
-      <div class="visa"><div class="n">03</div><h3>留学生</h3>
-        <p>資格外活動の許可を得た留学生のご紹介。<strong>特定技能試験に合格した留学生を、特定技能ビザへ資格変更してご紹介する</strong>こともできます。</p></div>
-      <div class="visa"><div class="n">04</div><h3>高度人材</h3>
-        <p>専門的な知識や技術を持つ人材を、職種と勤務内容に合わせてご紹介します。</p></div>
-      <div class="visa"><div class="n">05</div><h3>日系人・定住者</h3>
-        <p>就労に制限のない在留資格をお持ちの方のご紹介。すぐに働いていただけます。</p></div>
-    </div>
-    <div class="stats">
+    <div class="sec-head"><span class="en">SERVICE</span><h2>ご紹介できる人材</h2><p>在留資格ごとに、ご紹介できる人材が変わります。</p></div>
+    <div class="chips"><span class="chip">技能実習</span><span class="chip">特定技能</span><span class="chip">留学生</span><span class="chip">高度人材</span><span class="chip">日系人・定住者</span></div><div class="stats">
       <div class="stat"><div class="v">○○<small>社</small></div><div class="l">受入企業さま</div></div>
       <div class="stat"><div class="v">○○○<small>名</small></div><div class="l">累計ご紹介人数</div></div>
       <div class="stat"><div class="v">○<small>か国</small></div><div class="l">対応国籍</div></div>
       <div class="stat"><div class="v">19登-000975</div><div class="l">登録支援機関 登録番号</div></div>
     </div>
-  <div class="more"><a class="btn-more" href="service.html"><span>詳しく見る</span></a></div>
-</div>
+    <div class="more"><a class="btn-more" href="service.html"><span>詳しく見る</span></a></div>
+  </div>
 </section>
 
 <section class="alt" id="support">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="en">SUPPORT</span>
-      <h2>登録支援機関としての支援</h2>
-      <p>特定技能で義務づけられている支援です。以下はすべて弊社がお引き受けします。</p>
-    </div>
-    <div class="support">
-      <div class="sup"><span class="c">01</span>事前ガイダンスの実施</div>
-      <div class="sup"><span class="c">02</span>出入国する際の送迎</div>
-      <div class="sup"><span class="c">03</span>住居の確保・生活に必要な契約の支援</div>
-      <div class="sup"><span class="c">04</span>生活オリエンテーションの実施</div>
-      <div class="sup"><span class="c">05</span>公的手続などへの同行</div>
-      <div class="sup"><span class="c">06</span>日本語学習の機会の提供</div>
-      <div class="sup"><span class="c">07</span>相談・苦情への対応</div>
-      <div class="sup"><span class="c">08</span>日本人との交流促進</div>
-      <div class="sup"><span class="c">09</span>転職支援（人員整理などの場合）</div>
-      <div class="sup"><span class="c">10</span>定期的な面談・行政機関への通報</div>
-    </div>
-  <div class="more"><a class="btn-more" href="support.html"><span>詳しく見る</span></a></div>
-</div>
+    <div class="sec-head"><span class="en">SUPPORT</span><h2>登録支援機関としての支援</h2><p>義務づけられた10項目を、外部に出さず弊社で行います。</p></div>
+    <div class="chips"><span class="chip">住居の確保・生活に必要な契約の支援</span><span class="chip">生活オリエンテーションの実施</span><span class="chip">日本語学習の機会の提供</span><span class="chip">相談・苦情への対応</span></div><p class="chips-note">ほか、事前ガイダンスや送迎など全10項目。</p>
+    <div class="more"><a class="btn-more" href="support.html"><span>詳しく見る</span></a></div>
+  </div>
 </section>
 
 <section id="flow">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="en">FLOW</span>
-      <h2>受入れまでの流れ</h2>
-      <p>ご相談から就労開始までの目安です。ご相談の段階では費用はいただきません。</p>
-    </div>
-    <div class="flow">
-      <div class="step"><div class="n">01</div><h3>ご相談</h3>
-        <p>職種・人数・時期をお伺いし、どの在留資格が適しているかをご提案します。</p><div class="d">無料</div></div>
-      <div class="step"><div class="n">02</div><h3>求人のお申込み</h3>
-        <p>条件を整理し、提携する現地の送り出し機関へ募集をかけます。</p><div class="d">約2週間</div></div>
-      <div class="step"><div class="n">03</div><h3>選考・面接</h3>
-        <p>現地での書類選考ののち、オンラインまたは現地で面接していただきます。</p><div class="d">約1か月</div></div>
-      <div class="step"><div class="n">04</div><h3>申請・手続き</h3>
-        <p>在留資格の認定申請から査証の取得まで、書類の作成を代行します。</p><div class="d">約3〜4か月</div></div>
-      <div class="step"><div class="n">05</div><h3>入国・就労開始</h3>
-        <p>空港へのお迎え、住まいの手配、生活の案内まで。就労後も定期的に面談します。</p><div class="d">継続</div></div>
-    </div>
-  <div class="more"><a class="btn-more" href="flow.html"><span>詳しく見る</span></a></div>
-</div>
+    <div class="sec-head"><span class="en">FLOW</span><h2>受入れまでの流れ</h2><p>ご相談から就労開始まで、おおむね5〜6か月です。</p></div>
+    <ol class="tsteps"><li class="tstep"><span class="num">01</span><b>ご相談</b><span>無料</span></li><li class="tstep"><span class="num">02</span><b>求人のお申込み</b><span>約2週間</span></li><li class="tstep"><span class="num">03</span><b>選考・面接</b><span>約1か月</span></li><li class="tstep"><span class="num">04</span><b>申請・手続き</b><span>約3〜4か月</span></li><li class="tstep"><span class="num">05</span><b>入国・就労開始</b><span>継続</span></li></ol>
+    <div class="more"><a class="btn-more" href="flow.html"><span>詳しく見る</span></a></div>
+  </div>
 </section>
 
 <section class="alt" id="partners">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="en">GROUP &amp; PARTNERS</span>
-      <h2>自社グループと提携機関</h2>
-      <p>監理団体を自社で設立しているため、募集から入国、就労後の支援までを一貫してお引き受けできます。</p>
-    </div>
-    <div class="group-lead">
-      <div class="badge">自社グループ</div>
-      <h3>ブリッジング協同組合</h3>
-      <p>2021年8月、中小企業協同組合法にもとづき愛知県知事の許可を受けて弊社が設立した監理団体です。
-        技能実習生の受入れを、紹介から監理まで自社グループ内で完結できます。</p>
-    </div>
-    <div class="partners">
-      <div class="partner">
-        <div class="ph"><img src="../img/training-1.jpg" alt="提携する送り出し機関での日本語授業の様子"></div>
-        <h3>プロデンシャルエンプロイメント</h3>
-        <div class="cc">PHILIPPINES</div>
-        <p>日本へ人材を送り出すリクルートメントエージェンシー。<strong>現地フィリピンで、企業さまご自身が面接を行っていただくこと</strong>もできます。</p>
-      </div>
-      <div class="partner">
-        <div class="ph"><img src="../img/training-2.jpg" alt="送り出し機関の教室で学ぶ実習生の皆さん"></div>
-        <h3>POLIMEX 国際人材株式会社</h3>
-        <div class="cc">VIETNAM</div>
-        <p>2021年8月にブリッジング協同組合と業務提携。ベトナムとの手続きを早く進められます。</p>
-      </div>
-      <div class="partner">
-        <div class="ph">監理団体</div>
-        <h3>トラスト江南協同組合</h3>
-        <div class="cc">AICHI, JAPAN</div>
-        <p>2019年9月に業務提携。愛知・岐阜・三重の企業さまや介護施設さまへの受入れを支えています。</p>
-      </div>
-    </div>
-  <div class="more"><a class="btn-more" href="partners.html"><span>詳しく見る</span></a></div>
-</div>
+    <div class="sec-head"><span class="en">GROUP &amp; PARTNERS</span><h2>自社グループと提携機関</h2><p>募集から就労後の支援まで、間に他社を挟みません。</p></div>
+    <div class="chips"><span class="chip"><span class="num">自社グループ</span>ブリッジング協同組合</span><span class="chip"><span class="num">PHILIPPINES</span>プロデンシャルエンプロイメント</span><span class="chip"><span class="num">VIETNAM</span>POLIMEX 国際人材株式会社</span><span class="chip"><span class="num">AICHI, JAPAN</span>トラスト江南協同組合</span></div>
+    <div class="more"><a class="btn-more" href="partners.html"><span>詳しく見る</span></a></div>
+  </div>
 </section>
 
 <section id="company">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="en">MESSAGE</span>
-      <h2>代表ごあいさつ</h2>
-    </div>
-    <div class="greet">
-      <div class="ph">代表のお写真が<br>入ります</div>
-      <div>
-        <h3>「来てよかった」と言ってもらえる<br>受入れを、企業さまと一緒に。</h3>
-        <p>（ここに代表ごあいさつの文章が入ります。創業の経緯、外国人材の受入れに取り組む理由、
-          受入企業さまと働く方の双方に対してどのような姿勢で臨んでいるか、といった内容を想定しています。）</p>
-        <p>弊社はグループで保育園と児童発達支援・放課後等デイサービスも運営し、外国にルーツのあるお子さまをお預かりしてきました。<strong>外国人の住民の方が地域の一員として暮らしていけるよう、多文化共生社会に貢献していきます。</strong></p>
-        <div class="sign">代表取締役<b>兼松 厚志</b></div>
-      </div>
-    </div>
-  <div class="more"><a class="btn-more" href="company.html"><span>詳しく見る</span></a></div>
-</div>
+    <div class="sec-head"><span class="en">MESSAGE</span><h2>代表ごあいさつ</h2></div>
+    <div class="greet top-greet"><div class="ph">代表のお写真が<br>入ります</div><div><h3>「来てよかった」と言ってもらえる<br>受入れを、企業さまと一緒に。</h3><div class="sign">代表取締役<b>兼松 厚志</b></div></div></div>
+    <div class="more"><a class="btn-more" href="company.html"><span>詳しく見る</span></a></div>
+  </div>
 </section>
 
-<section class="alt faq" id="faq">
+<section class="alt" id="faq">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="en">FAQ</span>
-      <h2>よくあるご質問</h2>
-    </div>
-    <details open>
-      <summary>相談だけでも費用はかかりますか。</summary>
-      <div class="a">いいえ。ご相談とお見積りは無料です。制度の説明だけでもお気軽にお声がけください。</div>
-    </details>
-    <details>
-      <summary>受入れまでにどのくらいの期間がかかりますか。</summary>
-      <div class="a">在留資格によりますが、ご相談から就労開始までおおむね5〜6か月が目安です。</div>
-    </details>
-    <details>
-      <summary>費用はどのくらいかかりますか。</summary>
-      <div class="a">（受入れ人数や在留資格によって変わるため、考え方をここに記載します。）</div>
-    </details>
-    <details>
-      <summary>受入れの経験がない会社でも大丈夫ですか。</summary>
-      <div class="a">はじめての企業さまがほとんどです。社内の受入れ体制づくりからご一緒します。</div>
-    </details>
-  <div class="more"><a class="btn-more" href="faq.html"><span>詳しく見る</span></a></div>
-</div>
+    <div class="sec-head"><span class="en">FAQ</span><h2>よくあるご質問</h2></div>
+    <ul class="qlist"><li><a href="faq.html">相談だけでも費用はかかりますか。</a></li><li><a href="faq.html">受入れまでにどのくらいの期間がかかりますか。</a></li><li><a href="faq.html">費用はどのくらいかかりますか。</a></li><li><a href="faq.html">受入れの経験がない会社でも大丈夫ですか。</a></li></ul>
+    <div class="more"><a class="btn-more" href="faq.html"><span>詳しく見る</span></a></div>
+  </div>
 </section>
 
 <div class="cta" id="contact">

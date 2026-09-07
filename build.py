@@ -5,15 +5,19 @@
 生成物だけを git revert しても次のビルドで元に戻ってしまうため、
 原本と生成物は必ず一緒にコミットする（かみのてで踏んだ事故）。
 
+**説明はページに1回だけ。** トップは各節の要約（名前・数字・見出しだけ）に
+とどめ、中身の説明は下層ページで行う。原本の文章はどちらにも書かず、
+下層ページ用の原文から digest_* が抜き出して要約を組み立てる。
+
 出力:
-  index.html    トップ（原本そのまま＋各節に「詳しく見る」を挿す）
+  index.html    トップ（各節の要約＋「詳しく見る」）
   service.html  ご紹介できる人材
   support.html  登録支援機関としての支援
   flow.html     受入れまでの流れ
   partners.html 自社グループと提携機関
   company.html  企業情報（代表ごあいさつ＋会社概要）
   faq.html      よくあるご質問
-  news.html     過去のお知らせ（src/news.json から。旧サイトの全13件）
+  news.html     過去のお知らせ（src/news.json から。旧サイトの全24件）
   contact.html  お問い合わせ
   privacy.html  プライバシーポリシー（旧サイトの本文を入れるまでは枠だけ）
 """
@@ -32,6 +36,8 @@ PLANS = {
 }
 
 # 出力ファイル → (原本の節id, メニュー表示名, ページ見出し, 英字ラベル, 説明)
+# 説明は、原本の節に導入文があればそちらを優先する（節の導入文は下層でしか
+# 出さないため。トップには TOP_LEAD の短い文を置く）。
 PAGES = {
     "service.html":  ("visas",    "ご紹介できる人材", "ご紹介できる人材", "SERVICE",
                       "就労が可能な5つの在留資格すべてに対応しています。"),
@@ -46,6 +52,16 @@ PAGES = {
     "faq.html":      ("faq",      "よくあるご質問", "よくあるご質問", "FAQ",
                       "費用や期間など、はじめてのご検討でよくいただくご質問です。"),
 }
+# トップに置く一行。**下層の導入文とは別の文にする**（同じ文を2回読ませない）。
+TOP_LEAD = {
+    "visas":    "在留資格ごとに、ご紹介できる人材が変わります。",
+    "support":  "義務づけられた10項目を、外部に出さず弊社で行います。",
+    "flow":     "ご相談から就労開始まで、おおむね5〜6か月です。",
+    "partners": "募集から就労後の支援まで、間に他社を挟みません。",
+    "company":  "",
+    "faq":      "",
+}
+
 # メニューの並び（左3つ／ロゴ／右3つ）
 NAV_L = [("service.html", "ご紹介できる人材"), ("support.html", "支援内容"), ("flow.html", "受入れの流れ")]
 NAV_R = [("partners.html", "提携機関"), ("company.html", "企業情報"), ("contact.html", "お問い合わせ")]
@@ -70,6 +86,31 @@ EXTRA_CSS = """
 .sub section{padding:44px 0 86px}
 /* トップの各節に付ける「詳しく見る」 */
 .more{text-align:center; margin-top:40px}
+
+/* ---- トップの要約（説明は下層ページに置く） ---- */
+.chips{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
+.chip{border:1px solid var(--line); background:#fff; padding:11px 20px;
+  font-size:14.5px; letter-spacing:.06em; white-space:nowrap}
+.chips .num{color:var(--gold,#b39861); font-size:12px; margin-right:8px;
+  font-variant-numeric:tabular-nums}
+.chips-note{text-align:center; color:var(--muted); font-size:13px; margin:16px 0 0;
+  letter-spacing:.04em}
+.tsteps{display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
+  list-style:none; margin:0; padding:0}
+.tstep{border:1px solid var(--line); background:#fff; padding:14px 18px; text-align:center;
+  flex:1 1 150px; max-width:230px}
+.tstep .num{display:block; color:var(--gold,#b39861); font-size:11.5px; letter-spacing:.14em;
+  margin-bottom:6px; font-variant-numeric:tabular-nums}
+.tstep b{display:block; font-weight:400; font-size:15px; letter-spacing:.05em}
+.tstep span{display:block; color:var(--muted); font-size:12px; margin-top:6px}
+.qlist{list-style:none; margin:0; padding:0; max-width:760px; margin-inline:auto}
+.qlist li{border-bottom:1px solid var(--line)}
+.qlist a{display:block; padding:18px 4px; text-decoration:none; font-size:14.5px;
+  letter-spacing:.04em}
+.qlist a:hover{color:var(--gold,#b39861)}
+/* トップのごあいさつは見出しと署名だけなので、お写真と高さが揃わない */
+.top-greet{align-items:center}
+.top-greet .ph{aspect-ratio:4/5}
 
 /* ---- 過去のお知らせ ---- */
 .nlist{padding:52px 0 86px}
@@ -113,6 +154,9 @@ EXTRA_CSS = """
 .plain{font-size:14px; letter-spacing:.02em}
 
 @media (max-width:760px){
+  /* 「住居の確保・生活に必要な契約の支援」は390pxで1行に収まらない */
+  .chip{padding:9px 15px; font-size:13.5px; white-space:normal}
+  .tstep{flex:1 1 128px; padding:12px 10px}
   .nitem{grid-template-columns:1fr; gap:10px; padding:24px 0}
   .nlist{padding:32px 0 56px}
   .outline th{width:auto; display:block; border-bottom:none; padding-bottom:0}
@@ -123,11 +167,21 @@ EXTRA_CSS = """
 """
 
 
-def parts(src_name):
+# 案Bは見出しが左揃えなので、要約も左に寄せる（案Aは中央揃え）。
+PLAN_CSS = {
+    "b": """
+.chips,.tsteps{justify-content:flex-start}
+.chips-note{text-align:left}
+.qlist{max-width:none; margin-inline:0}
+""",
+}
+
+
+def parts(src_name, key=""):
     """原本を、使い回す部品に切り分ける。"""
     s = (SRC / src_name).read_text(encoding="utf-8")
     head = s[: s.index("</head>")]
-    head = head.replace("</style>", EXTRA_CSS + "</style>")
+    head = head.replace("</style>", EXTRA_CSS + PLAN_CSS.get(key, "") + "</style>")
     header = s[s.index('<div class="utility">'): s.index('<div class="hero">')]
     hero = s[s.index('<div class="hero">'): s.index('<section id="visas">')]
     cta = s[s.index('<div class="cta" id="contact">'): s.index("<footer>")]
@@ -137,6 +191,121 @@ def parts(src_name):
     for m in re.finditer(r'<section[^>]*id="(\w+)".*?</section>\s*', s, re.S):
         secs[m.group(1)] = m.group(0)
     return head, header, hero, cta, footer, note, secs
+
+
+def sec_head(frag):
+    """節の見出し（英字ラベル・見出し・導入文）を取り出す。導入文は下層ページの
+    ページ見出しに回す。原本にHTML（<strong>）が入るのでエスケープしない。"""
+    en = re.search(r'<span class="en">(.*?)</span>', frag, re.S)
+    h2 = re.search(r"<h2>(.*?)</h2>", frag, re.S)
+    ld = re.search(r"<h2>.*?</h2>\s*<p>(.*?)</p>", frag, re.S)
+    return (en.group(1).strip() if en else "",
+            h2.group(1).strip() if h2 else "",
+            ld.group(1).strip() if ld else "")
+
+
+def div_block(frag, marker):
+    """marker で始まる div を、対応する閉じタグまで丸ごと取り出す。
+    入れ子があるので単純な正規表現では切れない。"""
+    i = frag.index(marker)
+    depth = 0
+    for m in re.finditer(r"<div\b|</div>", frag[i:]):
+        depth += 1 if m.group(0) == "<div" else -1
+        if depth == 0:
+            return frag[i: i + m.end()]
+    raise ValueError(marker)
+
+
+def top_section(frag, sec_id, inner, more_href):
+    """トップ用の節。見出しと要約だけを置き、説明は下層ページに任せる。"""
+    en, h2, _ = sec_head(frag)
+    alt = ' class="alt"' if 'class="alt' in frag[: frag.index(">") + 1] else ""
+    lead = TOP_LEAD.get(sec_id, "")
+    return (f'<section{alt} id="{sec_id}">\n  <div class="wrap">\n'
+            f'    <div class="sec-head"><span class="en">{en}</span><h2>{h2}</h2>'
+            f'{f"<p>{lead}</p>" if lead else ""}</div>\n'
+            f"    {inner}\n"
+            f'    <div class="more"><a class="btn-more" href="{more_href}">'
+            f"<span>詳しく見る</span></a></div>\n  </div>\n</section>\n\n")
+
+
+def chips(items):
+    return ('<div class="chips">'
+            + "".join(f'<span class="chip">{n}</span>' for n in items)
+            + "</div>")
+
+
+def digest(secs):
+    """トップに並べる要約を、下層ページ用の原文から組み立てる。
+    **原文をそのまま貼らない**（同じ説明が2ページに出てしまうため）。"""
+    out = {}
+
+    # 在留資格は名前だけ。実績の数字はトップだけに置く（下層からは外す）。
+    f = secs["visas"]
+    names = re.findall(r'<div class="visa">.*?<h3>(.*?)</h3>', f, re.S)
+    out["visas"] = top_section(f, "visas", chips(names) + div_block(f, '<div class="stats">'),
+                               "service.html")
+
+    # 支援は代表的な4つだけ挙げ、10項目の中身は support.html で説明する。
+    f = secs["support"]
+    sups = re.findall(r'<div class="sup"><span class="c">\d+</span>(.*?)</div>', f, re.S)
+    pick = [sups[i] for i in (2, 3, 5, 6) if i < len(sups)]
+    out["support"] = top_section(
+        f, "support",
+        chips(pick) + f'<p class="chips-note">ほか、事前ガイダンスや送迎など全{len(sups)}項目。</p>',
+        "support.html")
+
+    # 流れは手順名と期間だけ。各手順の説明は flow.html で行う。
+    f = secs["flow"]
+    steps = re.findall(r'<div class="step">.*?<div class="n">(.*?)</div>\s*<h3>(.*?)</h3>'
+                       r'.*?<div class="d">(.*?)</div>', f, re.S)
+    out["flow"] = top_section(
+        f, "flow",
+        '<ol class="tsteps">' + "".join(
+            f'<li class="tstep"><span class="num">{n}</span><b>{t}</b><span>{d}</span></li>'
+            for n, t, d in steps) + "</ol>",
+        "flow.html")
+
+    # 提携先は名称と国だけ。設立の経緯や写真は partners.html に置く。
+    f = secs["partners"]
+    grp = re.search(r'<div class="group-lead">.*?<h3>(.*?)</h3>', f, re.S)
+    prs = re.findall(r'<div class="partner">.*?<h3>(.*?)</h3>\s*<div class="cc">(.*?)</div>', f, re.S)
+    cards = [f'<span class="chip"><span class="num">自社グループ</span>{grp.group(1)}</span>'] if grp else []
+    cards += [f'<span class="chip"><span class="num">{cc}</span>{nm}</span>' for nm, cc in prs]
+    out["partners"] = top_section(f, "partners", '<div class="chips">' + "".join(cards) + "</div>",
+                                  "partners.html")
+
+    # ごあいさつはお写真と見出しだけ。本文は company.html で読んでいただく。
+    f = secs["company"]
+    h3 = re.search(r'<div class="greet">.*?<h3>(.*?)</h3>', f, re.S)
+    photo = div_block(f, '<div class="ph">')
+    sign = div_block(f, '<div class="sign">')
+    out["company"] = top_section(
+        f, "company",
+        f'<div class="greet top-greet">{photo}<div><h3>{h3.group(1)}</h3>{sign}</div></div>',
+        "company.html")
+
+    # よくあるご質問は質問だけ。答えは faq.html に置く。
+    f = secs["faq"]
+    qs = re.findall(r"<summary>(.*?)</summary>", f, re.S)
+    out["faq"] = top_section(
+        f, "faq",
+        '<ul class="qlist">' + "".join(
+            f'<li><a href="faq.html">{q.strip()}</a></li>' for q in qs) + "</ul>",
+        "faq.html")
+    return out
+
+
+def fill_newsband(hero, n=3):
+    """ヒーロー下のお知らせ帯を news.json の最新 n 件で埋める。
+    原本に直接書くと更新のたびに2案とも直すことになり、実際そのまま
+    2021年で止まっていた。見出しだけを出し、本文と写真は news.html に置く。"""
+    items = json.loads((SRC / "news.json").read_text(encoding="utf-8"))[:n]
+    li = "".join(f'<li><time>{it["date"]}</time>'
+                 f'<a href="news.html">{html.escape(it["title"])}</a></li>' for it in items)
+    band = hero[hero.index('<div class="newsband">'):]
+    old = band[band.index("<ul>"): band.index("</ul>") + 5]
+    return hero.replace(old, f"<ul>{li}</ul>")
 
 
 def nav_html(current):
@@ -172,33 +341,37 @@ def main():
     for key, (src_name, tagline) in PLANS.items():
         out_dir = ROOT / key
         out_dir.mkdir(exist_ok=True)
-        build_plan(out_dir, src_name)
+        build_plan(out_dir, src_name, key)
         print(f"  {key}/ ← {src_name}  （{tagline}）")
     write_chooser()
     print("  index.html（案の入口）")
 
 
-def build_plan(out_dir, src_name):
+def build_plan(out_dir, src_name, key=""):
     """1案ぶんの全ページを作る。**ページ構成は案で変えない。**"""
-    head, header, hero, cta, footer, note, secs = parts(src_name)
+    head, header, hero, cta, footer, note, secs = parts(src_name, key)
     tail = fix_links(cta) + fix_links(footer) + note
 
-    body = fix_links(hero)
+    tops = digest(secs)
+    body = fix_links(fill_newsband(hero))
     for out, (sec, _menu, _t, _en, _d) in PAGES.items():
-        frag = fix_links(secs[sec])
-        frag = frag.replace("</div>\n</section>",
-                            f'<div class="more"><a class="btn-more" href="{out}"><span>詳しく見る</span></a></div>\n</div>\n</section>')
-        body += frag
+        body += fix_links(tops[sec])
     (out_dir / "index.html").write_text(
         shell(head, header, tail, body, "index.html", "外国人材の受入れ支援"), encoding="utf-8")
 
     for out, (sec, _menu, ttl, en, desc) in PAGES.items():
+        frag = secs[sec]
+        # 節の導入文はページ見出しに上げる（下層では sec-head を隠しているため、
+        # そのままだと本文が読まれない）。実績の数字はトップにだけ置く。
+        lead = sec_head(frag)[2] or html.escape(desc)
+        if sec == "visas":
+            frag = frag.replace(div_block(frag, '<div class="stats">'), "")
         ph = (f'<div class="crumb"><div class="wrap"><a href="index.html">ホーム</a> ／ {html.escape(ttl)}</div></div>\n'
               f'<div class="page-head"><div class="wrap"><span class="en">{html.escape(en)}</span>'
-              f'<h1>{html.escape(ttl)}</h1><p>{html.escape(desc)}</p></div></div>\n')
+              f'<h1>{html.escape(ttl)}</h1><p>{lead}</p></div></div>\n')
         extra = (outline_table() + group_section()) if out == "company.html" else ""
         (out_dir / out).write_text(
-            shell(head, header, tail, '<div class="sub">' + ph + fix_links(secs[sec]) + extra + "</div>",
+            shell(head, header, tail, '<div class="sub">' + ph + fix_links(frag) + extra + "</div>",
                   out, ttl), encoding="utf-8")
 
     (out_dir / "news.html").write_text(
