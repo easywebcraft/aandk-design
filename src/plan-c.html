@@ -88,7 +88,7 @@ header{position:sticky; top:0; z-index:70; background:#fff; border-bottom:1px so
 /* 参考サイトは写真に濃紺をかぶせ、白の英字を中央に大きく置いている。
    ★かぶせは濃くしすぎない。ここだけ暗く、以降のページは白基調で明るく保つ。 */
 .hero{position:relative; overflow:hidden; background:var(--navy)}
-.hero .bg{position:relative; height:clamp(340px,50vh,480px); height:clamp(340px,50svh,480px)}
+.hero .bg{position:relative; height:clamp(400px,58vh,580px); height:clamp(400px,58svh,580px)}
 .hero .bg img{width:100%; height:100%; object-fit:cover; object-position:50% 58%}
 .hero .bg::after{content:""; position:absolute; inset:0;
   background:linear-gradient(180deg,rgba(11,46,104,.72) 0%,rgba(11,46,104,.58) 45%,
@@ -139,6 +139,24 @@ header{position:sticky; top:0; z-index:70; background:#fff; border-bottom:1px so
 /* ---- 節 ---- */
 section{padding:78px 0}
 section.alt{background:var(--panel)}
+
+/* ★写真を敷いた帯（参考サイトの Strengths/Features と同じ作り）。
+   写真の上に白または濃紺をかぶせ、その上に白い箱を浮かせる。
+   ★url() は出力先（c/）から見た位置で書くこと。fix_links() が直すのは
+   本文の src= だけで、CSS の url() は直さない。 */
+#support{
+  background-image:linear-gradient(rgba(255,255,255,.90),rgba(255,255,255,.94)),
+                   url(../img/hero-trainees.jpg);
+  background-size:cover; background-position:50% 38%; background-repeat:no-repeat;
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+#partners{
+  background-image:linear-gradient(rgba(255,255,255,.86),rgba(255,255,255,.93)),
+                   url(../img/hero-sky.jpg);
+  background-size:cover; background-position:50% 30%; background-repeat:no-repeat;
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+/* 帯の上に置く箱は、白でしっかり浮かせる（透けると写真に負ける） */
+#support .sup, #partners .partner, #partners .group-lead, #partners .chip{
+  background:#fff; box-shadow:0 2px 14px rgba(11,46,104,.07)}
 /* ★参考サイトの見出しの型：大きな英字（Oswald・濃紺）の下に、
    日本語を小さく添える。中央揃え。 */
 .sec-head{text-align:center; margin-bottom:46px}
@@ -194,7 +212,7 @@ section.alt{background:var(--panel)}
 .group-lead p{margin:0; font-size:14px; color:var(--ink)}
 .partners{display:grid; grid-template-columns:repeat(auto-fit,minmax(262px,1fr)); gap:20px}
 .partner{background:#fff; border:1px solid var(--line); overflow:hidden}
-.partner .ph{height:158px; background:var(--panel); display:flex; align-items:center;
+.partner .ph{height:214px; background:var(--panel); display:flex; align-items:center;
   justify-content:center; color:var(--muted); font-size:12px; overflow:hidden}
 .partner .ph img{width:100%; height:100%; object-fit:cover}
 .partner h3{font-size:16.5px; font-weight:700; margin:18px 20px 4px; color:var(--navy);
@@ -226,7 +244,10 @@ section.alt{background:var(--panel)}
 .faq .a{padding:0 20px 18px 60px; font-size:14px; color:var(--muted)}
 
 /* CTA */
-.cta{background:var(--navy); color:#fff; text-align:center; padding:70px 0}
+.cta{background:var(--navy); color:#fff; text-align:center; padding:84px 0;
+  background-image:linear-gradient(rgba(11,46,104,.90),rgba(8,35,79,.94)),
+                   url(../img/hero-trainees.jpg);
+  background-size:cover; background-position:50% 42%; background-repeat:no-repeat}
 .cta h2{font-size:clamp(20px,2.8vw,28px); font-weight:700; margin:0 0 12px; color:#fff}
 .cta p{color:#c5d8ec; margin:0 0 30px; font-size:14.5px}
 .cta .row{display:flex; gap:30px; justify-content:center; align-items:center; flex-wrap:wrap}

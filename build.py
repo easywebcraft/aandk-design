@@ -328,6 +328,8 @@ PLAN_CSS = {
 .tstep{border-top:3px solid var(--blue)}
 .tstep .num{font-family:var(--serif); color:var(--blue); font-weight:600}
 .qlist a{color:var(--navy); font-weight:500}
+/* トップのごあいさつは見出しと署名だけなので、縦長のお写真だと余白が空く */
+.top-greet .ph{aspect-ratio:1/1}
 @media (max-width:760px){
   .page-head{padding:34px 0 30px}
   .sub section{padding:34px 0 56px}
