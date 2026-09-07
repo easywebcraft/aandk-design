@@ -306,9 +306,13 @@ footer a:hover{color:#fff; text-decoration:underline}
 .nitem{display:grid; grid-template-columns:140px 1fr; gap:34px;
   padding:32px 0; border-bottom:1px solid var(--line)}
 .nitem:first-child{border-top:1px solid var(--line)}
+/* ★グリッドの子は既定で min-width:auto。中に長い英数字があると列が縮まず、
+   320pxで箱からはみ出す（案Cのお知らせで実際に出た）。 */
+.nitem > *{min-width:0}
 .nitem time{font-family:var(--serif); color:var(--gold-d); font-size:15px;
   letter-spacing:.08em; font-variant-numeric:tabular-nums; padding-top:2px}
-.nbody p{margin:0 0 10px; font-size:14.5px; letter-spacing:.02em}
+.nbody p{margin:0 0 10px; font-size:14.5px; letter-spacing:.02em;
+  overflow-wrap:break-word}
 .nbody p:first-child{font-family:var(--serif); font-weight:400; font-size:17px;
   letter-spacing:.08em; line-height:1.8; margin-bottom:14px}
 .nbody p:last-child{margin-bottom:0}

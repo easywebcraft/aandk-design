@@ -33,12 +33,12 @@ SRC = ROOT / "src"
 PLANS = {
     "a": ("plan-a.html", "明朝と余白で、落ち着いた品位を"),
     "b": ("plan-b.html", "青とゴシックで、明快に"),
-    "c": ("plan-c.html", "濃紺と大きな英字で、堅実に"),
+    "c": ("plan-c.html", "白と余白、字間の広い英字で"),
 }
 # 原本は、build.py が差し込むCSSが使う変数を必ず定義すること。
 #   --gold（差し色）／--gold-d（濃い差し色）／--serif（見出しの書体）
 #   --line ／--line-s（罫線）／--muted（補助の文字）／--panel（薄い地）／--ink（文字）
-# 名前は案Aから来ているが中身は案ごとに違う（案Cでは青と濃紺を入れている）。
+# 名前は案Aから来ているが中身は案ごとに違う（案Cでは青とグレーを入れている）。
 
 # 出力ファイル → (原本の節id, メニュー表示名, ページ見出し, 英字ラベル, 説明)
 # 説明は、原本の節に導入文があればそちらを優先する（節の導入文は下層でしか
@@ -122,9 +122,13 @@ EXTRA_CSS = """
 .nitem{display:grid; grid-template-columns:140px 1fr; gap:34px;
   padding:32px 0; border-bottom:1px solid var(--line)}
 .nitem:first-child{border-top:1px solid var(--line)}
+/* ★グリッドの子は既定で min-width:auto。中に長い英数字があると列が縮まず、
+   320pxで箱からはみ出す（案Cのお知らせで実際に出た）。 */
+.nitem > *{min-width:0}
 .nitem time{font-family:var(--serif); color:var(--gold-d); font-size:15px;
   letter-spacing:.08em; font-variant-numeric:tabular-nums; padding-top:2px}
-.nbody p{margin:0 0 10px; font-size:14.5px; letter-spacing:.02em}
+.nbody p{margin:0 0 10px; font-size:14.5px; letter-spacing:.02em;
+  overflow-wrap:break-word}
 .nbody p:first-child{font-family:var(--serif); font-weight:400; font-size:17px;
   letter-spacing:.08em; line-height:1.8; margin-bottom:14px}
 .nbody p:last-child{margin-bottom:0}
@@ -304,35 +308,55 @@ PLAN_CSS = {
 .chips-note{text-align:left}
 .qlist{max-width:none; margin-inline:0}
 """,
-    # 案Cは参考サイトに合わせて、下層のページ見出しを濃紺の帯にする。
-    # 角も落とさない（参考サイトのボタン・箱が border-radius:0）。
+    # 案Cは参考サイトに合わせて、下層のページ見出しを「巨大な英字＋小さな和文」の
+    # 左寄せにし、うしろに薄いグレーの地紋を敷く。表は罫線を使わず縞にする。
     "c": """
-.crumb{background:var(--panel); padding:13px 0; color:var(--muted)}
-.page-head{background:var(--navy); color:#fff; padding:54px 0 48px}
-.page-head .en{font-family:var(--serif); color:#8fc6e8; font-weight:700;
-  font-size:clamp(26px,4.6vw,46px); letter-spacing:.02em; line-height:1.05; margin-bottom:8px}
-.page-head h1{font-family:var(--sans); font-weight:700; color:#fff;
-  font-size:clamp(18px,2.4vw,23px); letter-spacing:.1em; margin:0 0 12px}
-.page-head p{color:#c5d8ec}
-.sub section{padding:58px 0 82px}
-.nitem time{font-family:var(--serif); font-weight:600; color:var(--blue)}
-.nbody p:first-child{font-family:var(--sans); font-weight:700; color:var(--navy); font-size:16.5px}
-.outline th{font-family:var(--sans); font-weight:700; color:var(--navy); background:var(--blue-s);
-  letter-spacing:.04em}
-.gcard h3{color:var(--navy)}
-.gcard .gtag{color:var(--blue)}
-.contact-box h3{font-family:var(--sans); font-weight:700; color:var(--navy); letter-spacing:.06em}
-.contact-box .big{font-family:var(--serif); color:var(--navy)}
-.chip{border-radius:0}
-.chips .num{color:var(--blue)}
-.tstep{border-top:3px solid var(--blue)}
-.tstep .num{font-family:var(--serif); color:var(--blue); font-weight:600}
-.qlist a{color:var(--navy); font-weight:500}
+.crumb{padding:16px 0 0; color:var(--muted)}
+.page-head{text-align:left; padding:34px 0 46px; position:relative; overflow:hidden}
+/* 薄いグレーの地紋。上だけに出して下へ消す（参考サイトの見出し背景） */
+.page-head::before{content:""; position:absolute; left:0; right:0; top:0; height:150px; z-index:0;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,0) 0%,#fff 88%),
+    repeating-linear-gradient(90deg,#eef1f2 0 74px,transparent 74px 90px),
+    repeating-linear-gradient(0deg,#eef1f2 0 22px,transparent 22px 40px)}
+.page-head .wrap{position:relative; z-index:1}
+.page-head .en{font-family:var(--serif); font-weight:600; color:var(--ink);
+  font-size:clamp(28px,5vw,50px); letter-spacing:.24em; line-height:1.15; margin-bottom:6px}
+.page-head h1{font-family:var(--sans); font-weight:400; color:var(--muted);
+  font-size:clamp(13px,1.6vw,15px); letter-spacing:.14em; margin:0 0 14px}
+.page-head p{color:var(--muted); max-width:60em}
+.sub section{padding:56px 0 86px}
+/* お知らせ */
+.nitem{border-bottom:1px solid var(--line)}
+.nitem:first-child{border-top:1px solid var(--line)}
+.nitem time{font-family:var(--serif); font-weight:600; color:var(--muted); letter-spacing:.08em}
+.nbody p:first-child{font-family:var(--sans); font-weight:700; color:var(--ink); font-size:16.5px}
+/* 会社概要は罫線を引かず、行の縞で読ませる（参考サイトと同じ） */
+.outline{margin-top:48px}
+.outline th,.outline td{border-bottom:none; padding:18px 22px}
+.outline tr:nth-child(odd) th,.outline tr:nth-child(odd) td{background:var(--line-s)}
+.outline th{font-family:var(--sans); font-weight:700; color:var(--ink); letter-spacing:.06em}
+/* グループの事業・お問い合わせ */
+.gcard{border:none; box-shadow:0 2px 14px rgba(0,31,63,.08); border-right:3px solid var(--blue)}
+.gcard h3{color:var(--blue)}
+.gcard .gtag{color:var(--muted); letter-spacing:.12em}
+.contact-box{border:none; box-shadow:0 2px 14px rgba(0,31,63,.08); border-top:3px solid var(--blue)}
+.contact-box h3{font-family:var(--sans); font-weight:700; color:var(--ink); letter-spacing:.08em}
+.contact-box .big{font-family:var(--serif); color:var(--blue); font-weight:700}
+/* トップの要約 */
+.chip{border-radius:0; border-color:var(--line); box-shadow:0 2px 10px rgba(0,31,63,.06)}
+.chips .num{color:var(--muted); letter-spacing:.14em}
+.tstep{border:none; box-shadow:0 2px 12px rgba(0,31,63,.07); border-top:3px solid var(--blue)}
+.tstep .num{font-family:var(--serif); color:var(--muted); font-weight:600; letter-spacing:.24em}
+.qlist li{border-bottom:1px solid var(--line)}
+.qlist a{color:var(--ink); font-weight:700}
+.qlist a:hover{color:var(--blue)}
 /* トップのごあいさつは見出しと署名だけなので、縦長のお写真だと余白が空く */
 .top-greet .ph{aspect-ratio:1/1}
 @media (max-width:760px){
-  .page-head{padding:34px 0 30px}
-  .sub section{padding:34px 0 56px}
+  .page-head{padding:22px 0 30px}
+  .sub section{padding:34px 0 58px}
+  .outline th,.outline td{padding:12px 16px}
 }
 """,
 }
