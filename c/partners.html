@@ -86,26 +86,30 @@ header{position:sticky; top:0; z-index:70; background:#fff; border-bottom:1px so
 .mnav .grp-t{padding:4px 20px 2px; font-size:11px; color:var(--blue); font-weight:700}
 
 /* ---- ヒーロー ---- */
-/* ★参考サイトは写真を大きく敷き、その上に直接白い文字を置く（文字の下に
-   短冊は敷かない）。写真だけでは白文字が読めないので、かぶせで濃さを作る。
-   ★濃さは「文字を消した下地」を測って決めている（/tmp/wc.py。白文字で
-   危ないのは明るい画素なので上位5%で見る。本文15pxは4.5以上）。 */
+/* ★空を主役にする。写真を濃紺で覆うと空が沈むので、かぶせは白側にする。
+   案Aと同じ考え方で、文字は濃い色にし、当たるところだけ白を起こす
+   （全面に白をかぶせると写真が牛乳をかけたように色が抜ける）。
+   ★濃さは「文字を消した下地」を ~/kmtools/contrast.py で測って決めている
+   （本文15pxは4.5以上、見出しは3.0以上）。 */
 .hero{position:relative; overflow:hidden; background:#dceaf5}
 .hero .bg{position:relative; height:clamp(460px,72vh,680px); height:clamp(460px,72svh,680px)}
-.hero .bg img{width:100%; height:100%; object-fit:cover; object-position:50% 40%}
+.hero .bg img{width:100%; height:100%; object-fit:cover; object-position:50% 52%;
+  filter:saturate(1.14) contrast(1.05)}
 .hero .bg::after{content:""; position:absolute; inset:0;
-  background:linear-gradient(180deg,rgba(0,31,63,.24) 0%,rgba(0,31,63,.40) 30%,
-                             rgba(0,31,63,.58) 52%,rgba(0,31,63,.60) 100%)}
+  background:
+    radial-gradient(58% 46% at 50% 50%,rgba(255,255,255,.92) 0%,rgba(255,255,255,.70) 46%,
+                    rgba(255,255,255,0) 76%),
+    linear-gradient(180deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,0) 34%,
+                    rgba(255,255,255,.10) 100%)}
 .hero-copy{position:absolute; inset:0; display:flex; align-items:center; z-index:2}
 .hero-copy .wrap{text-align:center; max-width:900px}
 .hero-copy .tag{display:inline-block; background:var(--blue); border:1px solid var(--blue);
   color:#fff; font-size:12px; font-weight:700; padding:6px 18px; margin-bottom:26px;
   letter-spacing:.14em}
 .hero-copy h1{font-size:clamp(25px,4.2vw,46px); font-weight:700; line-height:1.55; margin:0 0 20px;
-  color:#fff; letter-spacing:.06em; text-shadow:0 2px 18px rgba(0,20,45,.4)}
-.hero-copy h1 b{color:#fff; font-weight:700}
-.hero-copy p{font-size:15px; color:#fff; margin:0 auto 32px; max-width:36em;
-  text-shadow:0 1px 12px rgba(0,20,45,.4)}
+  color:var(--navy); letter-spacing:.06em}
+.hero-copy h1 b{color:var(--blue); font-weight:700}
+.hero-copy p{font-size:15px; color:var(--ink); margin:0 auto 32px; max-width:36em}
 .hero-actions{display:flex; gap:14px; flex-wrap:wrap; justify-content:center}
 
 /* ボタン。塗りは要所だけ、それ以外は下線で見せる */
@@ -114,8 +118,8 @@ header{position:sticky; top:0; z-index:70; background:#fff; border-bottom:1px so
   border-radius:0; background:var(--blue); color:#fff; border:2px solid var(--blue);
   letter-spacing:.06em}
 .btn:hover{background:var(--navy); border-color:var(--navy)}
-.btn.ghost{background:transparent; color:#fff; border-color:rgba(255,255,255,.85)}
-.btn.ghost:hover{background:#fff; color:var(--blue); border-color:#fff}
+.btn.ghost{background:rgba(255,255,255,.9); color:var(--blue); border-color:var(--blue)}
+.btn.ghost:hover{background:var(--blue); color:#fff}
 /* 「詳しく見る」は塗らず、下線＋右のダッシュ（参考サイトのリンクの形） */
 .btn-more{display:inline-flex; align-items:center; text-decoration:none; font-size:14px;
   font-weight:700; color:var(--ink); letter-spacing:.08em; padding:6px 62px 12px 4px;
@@ -300,8 +304,13 @@ footer a:hover{color:var(--blue); text-decoration:underline}
   .btn,.btn-more{min-width:0; width:100%}
   .btn-more{justify-content:center; padding:10px 46px 14px 14px}
   .hero-actions{width:100%}
-  /* 白い面はスマホでは余白を詰める */
-  .hero-copy .wrap{padding:24px 20px 26px; margin:0 16px}
+  /* ★スマホは画面が縦長で、文字の塊が白い起こしからはみ出す。
+     狭い幅では起こしを横に広げる（強調の青が3.16まで落ちていた）。 */
+  .hero .bg::after{background:
+    radial-gradient(124% 54% at 50% 50%,rgba(255,255,255,.94) 0%,rgba(255,255,255,.78) 54%,
+                    rgba(255,255,255,0) 86%),
+    linear-gradient(180deg,rgba(255,255,255,.08) 0%,rgba(255,255,255,0) 34%,
+                    rgba(255,255,255,.12) 100%)}
   .newsband .box{flex-direction:column}
   .newsband .ttl{padding:20px 0 6px}
   .newsband .more-l{padding:6px 0 20px}
